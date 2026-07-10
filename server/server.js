@@ -80,13 +80,18 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: function(origin, callback) {
+  origin: function (origin, callback) {
     if (!origin) return callback(null, true);
-    const isLocal = /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
-    if (isLocal) {
+
+    const allowedOrigins = [
+      "http://localhost:5173",
+      "https://mind-care-ai.vercel.app" // Replace with YOUR actual Vercel URL
+    ];
+
+    if (allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error('Blocked by CORS policy'));
+      callback(new Error("Blocked by CORS policy"));
     }
   },
   credentials: true,
