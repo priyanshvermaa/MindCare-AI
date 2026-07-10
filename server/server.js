@@ -57,7 +57,6 @@ dotenv.config({ path: path.join(__dirname, '.env') });
 // Verify that critical environment variables are loaded successfully
 const requiredEnvVars = [
   'GEMINI_API_KEY',
-  'XAI_API_KEY',
   'GROQ_API_KEY'
 ];
 
