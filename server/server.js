@@ -54,13 +54,16 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.join(__dirname, '.env') });
 
-// Verify that critical environment variables for AI providers are loaded successfully
-const requiredEnvVars = ['GEMINI_API_KEY', 'XAI_API_KEY'];
+// Verify that critical environment variables are loaded successfully
+const requiredEnvVars = [
+  'GROQ_API_KEY'
+];
+
 requiredEnvVars.forEach((envVar) => {
   if (!process.env[envVar]) {
-    console.error(`❌ [SERVER INITIALIZATION ERROR] Required environment variable is missing: ${envVar}`);
+    console.error(`❌ Missing environment variable: ${envVar}`);
   } else {
-    console.log(`✅ [SERVER INITIALIZATION SUCCESS] Environment variable ${envVar} is loaded successfully.`);
+    console.log(`✅ ${envVar} loaded successfully.`);
   }
 });
 
