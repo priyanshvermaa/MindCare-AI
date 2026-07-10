@@ -85,7 +85,7 @@ app.use(cors({
 
     const allowedOrigins = [
       "http://localhost:5173",
-      "https://mind-care-ai.vercel.app" // Replace with YOUR actual Vercel URL
+      "https://mind-care-bnb7by6ni-pv8111142-8272s-projects.vercel.app/" // Replace with YOUR actual Vercel URL
     ];
 
     if (allowedOrigins.includes(origin)) {
