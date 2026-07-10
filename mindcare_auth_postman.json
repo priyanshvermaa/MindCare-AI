@@ -1,0 +1,1753 @@
+{
+  "info": {
+    "_postman_id": "c1f7a268-c112-4d8e-9086-4e5541604a8b",
+    "name": "MindCare AI Comprehensive API Collection",
+    "description": "Complete collection for validating MindCare AI API modules. Includes Authentication (Module 2), Role Gating Checks, and Mood Tracking CRUD & Analytics (Module 4).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Public Auth Operations",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Jane Doe\",\n  \"email\": \"jane.doe@company.com\",\n  \"password\": \"securePassword123\",\n  \"role\": \"employee\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            },
+            "description": "Register a new account. Supported roles are 'employee', 'practitioner', and 'admin'. A mock email activation link is logged to the server terminal console."
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.token) {",
+                  "    pm.collectionVariables.set(\"authToken\", jsonData.token);",
+                  "    console.log(\"Saved JWT Token to collectionVariable 'authToken'\");",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"jane.doe@company.com\",\n  \"password\": \"securePassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Authenticate user credentials. If verified, immediately issues active JWT session token."
+          },
+          "response": []
+        },
+        {
+          "name": "Request Recovery Link",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"jane.doe@company.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/forgot-password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "forgot-password"
+              ]
+            },
+            "description": "Submit email to request password reset token. Token is printed in the server logs."
+          },
+          "response": []
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"paste_token_from_terminal_here\",\n  \"password\": \"newSecurePassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/reset-password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "reset-password"
+              ]
+            },
+            "description": "Reset password using token found in recovery link."
+          },
+          "response": []
+        },
+        {
+          "name": "Google OAuth Login (Mock)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.token) {",
+                  "    pm.collectionVariables.set(\"authToken\", jsonData.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tokenId\": \"mock_google_id_token_xyz\",\n  \"name\": \"Sarah Jenkins\",\n  \"email\": \"sarah.jenkins@aether.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/google",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "google"
+              ]
+            },
+            "description": "OAuth bridge receiving Google Token validations and issuing immediate session JWT."
+          },
+          "response": []
+        },
+        {
+          "name": "GitHub OAuth Login (Mock)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.token) {",
+                  "    pm.collectionVariables.set(\"authToken\", jsonData.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"mock_github_auth_code_abc\",\n  \"name\": \"Marcus Vance\",\n  \"email\": \"marcus.vance@synthesize.io\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/github",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "github"
+              ]
+            },
+            "description": "GitHub OAuth login receiver."
+          },
+          "response": []
+        },
+        {
+          "name": "Google OAuth Initiate (Real Redirect)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/google",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "google"
+              ]
+            },
+            "description": "Initiates the Google OAuth 2.0 flow. In a browser, this will redirect to Google's official sign-in screen."
+          },
+          "response": []
+        },
+        {
+          "name": "Google OAuth Callback (Real)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/google/callback?code=mock_or_real_authorization_code_here",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "google",
+                "callback"
+              ],
+              "query": [
+                {
+                  "key": "code",
+                  "value": "mock_or_real_authorization_code_here"
+                }
+              ]
+            },
+            "description": "Google callback verification endpoint. Exchanges code for user info, checks/creates profile, and redirects to frontend with JWT."
+          },
+          "response": []
+        },
+        {
+          "name": "GitHub OAuth Initiate (Real Redirect)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/github",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "github"
+              ]
+            },
+            "description": "Initiates the GitHub OAuth flow. In a browser, this will redirect to GitHub's authorization consent screen."
+          },
+          "response": []
+        },
+        {
+          "name": "GitHub OAuth Callback (Real)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/github/callback?code=mock_or_real_authorization_code_here",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "github",
+                "callback"
+              ],
+              "query": [
+                {
+                  "key": "code",
+                  "value": "mock_or_real_authorization_code_here"
+                }
+              ]
+            },
+            "description": "GitHub callback verification endpoint. Exchanges code, retrieves public/private emails, checks/creates user, and redirects to frontend with JWT."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Protected Auth Operations",
+      "item": [
+        {
+          "name": "Get Current Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "me"
+              ]
+            },
+            "description": "Get logged in user profile. Requires Bearer JWT in authorization header."
+          },
+          "response": []
+        },
+        {
+          "name": "Test Employee Gating",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/employee-dashboard",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "employee-dashboard"
+              ]
+            },
+            "description": "Requires 'employee' or 'admin' roles. Denies practitioners."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Mood Tracker Operations",
+      "item": [
+        {
+          "name": "Log Daily Mood",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mood\": \"😐 Neutral\",\n  \"intensity\": 5,\n  \"stressLevel\": 4,\n  \"anxietyLevel\": 3,\n  \"energyLevel\": 6,\n  \"motivationLevel\": 5,\n  \"sleepHours\": 7.5,\n  \"waterIntake\": 1600,\n  \"exerciseMinutes\": 30,\n  \"meditationMinutes\": 15\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/moods",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "moods"
+              ]
+            },
+            "description": "Creates a daily mood log. Enforces calendar day duplicate check (returns 409 Conflict if logged today already)."
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Mood Logs",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/moods?search=sluggish&page=1&limit=5",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "moods"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "sluggish"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "5"
+                }
+              ]
+            },
+            "description": "Returns active logs list for search query, support sorting, filtering and pagination."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Mood By ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/moods/replace_with_mood_id_here",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "moods",
+                "replace_with_mood_id_here"
+              ]
+            },
+            "description": "Fetch details of individual active mood log by ID."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Mood Log",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mood\": \"😊 Happy\",\n  \"notes\": \"Pacing improved. Felt great after team walk.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/moods/replace_with_mood_id_here",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "moods",
+                "replace_with_mood_id_here"
+              ]
+            },
+            "description": "Update notes, tags, or parameter values on today's/any logged entry. Triggers score re-mapping if mood is changed."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Mood Log (Soft)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/moods/replace_with_mood_id_here",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "moods",
+                "replace_with_mood_id_here"
+              ]
+            },
+            "description": "Performs soft delete by setting `isDeleted: true` and `deletedAt` to current date."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Averages Analytics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/moods/analytics",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "moods",
+                "analytics"
+              ]
+            },
+            "description": "Fetches mood averages (all-time, weekly, monthly), distribution rates and trend curves values."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Active Streaks",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/moods/streak",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "moods",
+                "streak"
+              ]
+            },
+            "description": "Fetches current active streaks and longest streaks counts in days."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Dashboard Operations",
+      "item": [
+        {
+          "name": "Get Dashboard Stats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/stats",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "dashboard",
+                "stats"
+              ]
+            },
+            "description": "Fetch current user dashboard wellness metrics, streaks, progress and goals status for today."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Dashboard Charts",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/charts",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "dashboard",
+                "charts"
+              ]
+            },
+            "description": "Retrieve charts datasets including weekly mood trends, mood distribution, calendar heatmaps, and wellness score progress."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Recent Activity",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/activity",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "dashboard",
+                "activity"
+              ]
+            },
+            "description": "Fetch combined list of recent mood and journal entries along with dynamic Copilot AI suggestions."
+          },
+          "response": []
+        },
+        {
+          "name": "Log Mood (Dashboard Modal)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mood\": 4,\n  \"note\": \"Feeling good, finished morning tasks\",\n  \"activities\": [\"Workload\", \"Mindfulness\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/mood",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "dashboard",
+                "mood"
+              ]
+            },
+            "description": "Quick daily check-in from dashboard slider (mood value is mapped 1-5 where 3 is Neutral, 4 is Happy)."
+          },
+          "response": []
+        },
+        {
+          "name": "Write Journal (Dashboard Modal)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Stressed about sprint\",\n  \"content\": \"Feeling stressed and a bit exhausted from debugging all afternoon, but managing to keep going.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/journal",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "dashboard",
+                "journal"
+              ]
+            },
+            "description": "Saves quick journal thoughts from dashboard modal and triggers rule-based sentiment tagging."
+          },
+          "response": []
+        },
+        {
+          "name": "Log Wellness Activity (Dashboard Modal)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sleepHours\": 7.5,\n  \"waterIntake\": 1800,\n  \"meditationMinutes\": 10\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/activity",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "dashboard",
+                "activity"
+              ]
+            },
+            "description": "Updates daily sleep hours, water intake in ml, and meditation time to compute wellness stats."
+          },
+          "response": []
+        },
+        {
+          "name": "Seed Mock Chart Data",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/seed",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "dashboard",
+                "seed"
+              ]
+            },
+            "description": "Erases user logs and seeds 15 days of randomized, realistic health telemetry data to populate graphs and streaks immediately."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Journal Operations",
+      "item": [
+        {
+          "name": "Create Journal Entry",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Reflecting on today's progress\",\n  \"content\": \"**What went well today:**\\n\\nI managed to complete the sprint tasks on time. The team collaboration was excellent and I felt genuinely productive.\\n\\n**What I'm grateful for:**\\n\\n1. Supportive team members\\n2. Good health\\n3. Clear weather for my morning walk\",\n  \"mood\": \"😊 Happy\",\n  \"tags\": [\"productivity\", \"gratitude\", \"work\"],\n  \"category\": \"daily-reflection\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/journals",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "journals"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get All Journals",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/journals?page=1&limit=12&sortBy=createdAt&sortOrder=desc",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "journals"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "12"
+                },
+                {
+                  "key": "sortBy",
+                  "value": "createdAt"
+                },
+                {
+                  "key": "sortOrder",
+                  "value": "desc"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Journal Analytics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/journals/analytics",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "journals",
+                "analytics"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Weekly Reflection (AI)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/journals/weekly-reflection",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "journals",
+                "weekly-reflection"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Journal By ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/journals/{{journalId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "journals",
+                "{{journalId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Journal Entry",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Reflection\",\n  \"content\": \"Updated content with new insights and clarity.\",\n  \"tags\": [\"updated\", \"reflection\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/journals/{{journalId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "journals",
+                "{{journalId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Soft Delete Journal",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/journals/{{journalId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "journals",
+                "{{journalId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Restore Journal",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/journals/{{journalId}}/restore",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "journals",
+                "{{journalId}}",
+                "restore"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Toggle Favorite",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/journals/{{journalId}}/favorite",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "journals",
+                "{{journalId}}",
+                "favorite"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Toggle Pin",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/journals/{{journalId}}/pin",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "journals",
+                "{{journalId}}",
+                "pin"
+              ]
+            }
+          }
+        },
+        {
+          "name": "AI - Generate Summary",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/journals/{{journalId}}/ai/summary",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "journals",
+                "{{journalId}}",
+                "ai",
+                "summary"
+              ]
+            }
+          }
+        },
+        {
+          "name": "AI - Detect Tone",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/journals/{{journalId}}/ai/tone",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "journals",
+                "{{journalId}}",
+                "ai",
+                "tone"
+              ]
+            }
+          }
+        },
+        {
+          "name": "AI - Reflection Questions",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/journals/{{journalId}}/ai/reflect",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "journals",
+                "{{journalId}}",
+                "ai",
+                "reflect"
+              ]
+            }
+          }
+        },
+        {
+          "name": "AI - Positive Insights",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/journals/{{journalId}}/ai/insights",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "journals",
+                "{{journalId}}",
+                "ai",
+                "insights"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "AI Wellness Operations",
+      "item": [
+        {
+          "name": "Send AI Message",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"message\": \"Suggest a quick breathing exercise for stress relief\",\n  \"conversationId\": \"\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/ai/chat",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ai",
+                "chat"
+              ]
+            },
+            "description": "Sends user message to Groq AI advisor. Injecting 7-day health metrics in backend prompt. Supply conversationId to append to existing history."
+          },
+          "response": []
+        },
+        {
+          "name": "Get AI Conversations List",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/ai/conversations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ai",
+                "conversations"
+              ]
+            },
+            "description": "Retrieves the list of all conversations for the authenticated user, sorted by last updated."
+          },
+          "response": []
+        },
+        {
+          "name": "Get AI Conversation Messages",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/ai/conversations/{{conversationId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ai",
+                "conversations",
+                "{{conversationId}}"
+              ]
+            },
+            "description": "Retrieves the complete message history of a specific conversation session."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete AI Conversation",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/ai/conversations/{{conversationId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ai",
+                "conversations",
+                "{{conversationId}}"
+              ]
+            },
+            "description": "Removes the conversation history document from the database."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Dashboard AI Insights",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/ai-wellness",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "dashboard",
+                "ai-wellness"
+              ]
+            },
+            "description": "Calculates daily wellness insights, stress pattern indicators, custom tip of the day, and returns last active conversation details."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Analytics Operations",
+      "item": [
+        {
+          "name": "Get Dashboard Analytics Summary",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/analytics/dashboard",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "analytics",
+                "dashboard"
+              ]
+            },
+            "description": "Fetches compound streaks, weekly averages, and latest health history summaries for the client view."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Mood Analytics Reports",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/analytics/moods",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "analytics",
+                "moods"
+              ]
+            },
+            "description": "Calculates average stress, anxiety, energy scores, and pie chart distribution lists."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Journal Analytics Reports",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/analytics/journal",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "analytics",
+                "journal"
+              ]
+            },
+            "description": "Gathers journal sentiments distribution counts, writing length statistics, and weekly entry totals."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Active Logging Streak",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/analytics/streak",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "analytics",
+                "streak"
+              ]
+            },
+            "description": "Computes current logging streak metrics and matches against the user's all-time record streak."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Text Summary Report (JSON)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/analytics/report?range=weekly&format=json",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "analytics",
+                "report"
+              ],
+              "query": [
+                {
+                  "key": "range",
+                  "value": "weekly"
+                },
+                {
+                  "key": "format",
+                  "value": "json"
+                }
+              ]
+            },
+            "description": "Builds structured text reports in JSON format summarizing logging occurrences and average sleep statistics."
+          },
+          "response": []
+        },
+        {
+          "name": "Download Summary Report (CSV Attachment)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/analytics/report?range=weekly&format=csv",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "analytics",
+                "report"
+              ],
+              "query": [
+                {
+                  "key": "range",
+                  "value": "weekly"
+                },
+                {
+                  "key": "format",
+                  "value": "csv"
+                }
+              ]
+            },
+            "description": "Streams structured comma-separated data as a download attachment to import immediately in spreadsheet clients."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Wellness & Habit Operations",
+      "item": [
+        {
+          "name": "Create Goal",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Read a book chapter\",\n  \"description\": \"Read CBT methodologies in morning\",\n  \"category\": \"Mindfulness\",\n  \"priority\": \"medium\",\n  \"targetDate\": \"2026-07-15\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/goals",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "goals"
+              ]
+            },
+            "description": "Creates a new goal record and awards 50 experience points (XP)."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Goals",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/goals",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "goals"
+              ]
+            },
+            "description": "Fetches all goals created by the authenticated user."
+          },
+          "response": []
+        },
+        {
+          "name": "Update/Complete Goal",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"completed\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/goals/{{goalId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "goals",
+                "{{goalId}}"
+              ]
+            },
+            "description": "Updates goal parameters. Marking a goal as completed awards 150 experience points (XP) and checks for badges."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Goal",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/goals/{{goalId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "goals",
+                "{{goalId}}"
+              ]
+            },
+            "description": "Deletes the target goal by ID."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Habit",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"habitName\": \"Water intake 2L\",\n  \"category\": \"Hydration\",\n  \"target\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/habits",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "habits"
+              ]
+            },
+            "description": "Schedules a new habits checking task log."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Habits",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/habits",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "habits"
+              ]
+            },
+            "description": "Fetches all active habits and dynamically computes today's toggle completion statuses."
+          },
+          "response": []
+        },
+        {
+          "name": "Toggle Habit Completion",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"date\": \"2026-07-08\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/habits/{{habitId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "habits",
+                "{{habitId}}"
+              ]
+            },
+            "description": "Toggles habit completion on a given date. Grants 30 XP on completion check-in, or deducts 30 XP on untoggling."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Habit Streaks and Gamification",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/habits/streak",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "habits",
+                "streak"
+              ]
+            },
+            "description": "Retrieves the compound habits completion rate %, max streaks, levels, and badge awards."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Habit",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/habits/{{habitId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "habits",
+                "{{habitId}}"
+              ]
+            },
+            "description": "Deletes the target habit by ID."
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "conversationId",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}
