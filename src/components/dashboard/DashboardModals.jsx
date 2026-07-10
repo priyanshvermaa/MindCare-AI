@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Smile, Star, BookOpen, Activity, Heart, ShieldCheck } from 'lucide-react';
+import { X, Smile, Star, BookOpen, Activity, Heart, ShieldCheck, Sparkles } from 'lucide-react';
 import { Button } from '../ui/Button';
 import api from '../../services/api';
 
@@ -327,75 +327,306 @@ export const MoodModal = ({ isOpen, onClose, onSuccess }) => {
 export const JournalModal = ({ isOpen, onClose, onSuccess }) => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+  const [category, setCategory] = useState('Daily Reflection');
+  const [selectedMood, setSelectedMood] = useState('Good');
+  const [selectedTags, setSelectedTags] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
+
+  const textareaRef = useRef(null);
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  }, [content]);
+
+  // Close on ESC keypress
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') onClose();
+    };
+    if (isOpen) {
+      window.addEventListener('keydown', handleKeyDown);
+    }
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
 
+    const newErrors = {};
+    if (!title.trim()) newErrors.title = 'Title is required.';
+    if (!content.trim()) newErrors.content = 'Reflection content is required.';
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    setLoading(true);
     try {
-      await api.post('/dashboard/journal', { title, content });
+      await api.post('/dashboard/journal', {
+        title: title.trim(),
+        content: content.trim(),
+        category,
+        mood: selectedMood,
+        tags: selectedTags
+      });
+
       onSuccess();
       onClose();
+      // Reset states
       setTitle('');
       setContent('');
+      setCategory('Daily Reflection');
+      setSelectedMood('Good');
+      setSelectedTags([]);
+      setErrors({});
     } catch (err) {
       console.error('Failed to save journal: ', err);
+      setErrors({ submit: err.response?.data?.message || 'Failed to save journal entry.' });
     } finally {
       setLoading(false);
     }
   };
 
+  const CATEGORIES = [
+    'Daily Reflection',
+    'Gratitude',
+    'CBT Reflection',
+    'Positive Thoughts',
+    'Anxiety',
+    'Stress',
+    'Sleep',
+    'Personal Growth'
+  ];
+
+  const MOOD_OPTIONS = [
+    { emoji: '😊', label: 'Great' },
+    { emoji: '🙂', label: 'Good' },
+    { emoji: '😐', label: 'Neutral' },
+    { emoji: '😔', label: 'Sad' },
+    { emoji: '😣', label: 'Stressed' },
+    { emoji: '😴', label: 'Tired' }
+  ];
+
+  const TAG_OPTIONS = [
+    'Work', 'Study', 'Family', 'Friends', 'Exercise', 'Sleep', 'Anxiety', 'Stress', 'Meditation'
+  ];
+
   return (
-    <ModalWrapper isOpen={isOpen} onClose={onClose} title="Write CBT Journal Entry">
-      <form onSubmit={handleSubmit} className="space-y-5">
-        <div>
-          <label htmlFor="journal-title" className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">
-            Journal Title
-          </label>
-          <input
-            id="journal-title"
-            type="text"
-            required
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="Focusing on my triggers..."
-            className="bg-slate-950/80 border border-slate-700/80 rounded-xl px-4 py-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-brand-accent focus:ring-1 focus:ring-brand-accent w-full transition-colors"
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          {/* Backdrop overlay */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+            className="absolute inset-0 bg-[#1C1C3A]/40 backdrop-blur-md"
           />
-        </div>
 
-        <div>
-          <label htmlFor="journal-content" className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">
-            Reflective Thought Record
-          </label>
-          <textarea
-            id="journal-content"
-            required
-            rows="6"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder="What situation triggered your stress? Write down your automated distorted core belief and try to challenge it using reframed realistic sentences."
-            className="bg-slate-950/80 border border-slate-700/80 rounded-xl px-4 py-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-brand-accent focus:ring-1 focus:ring-brand-accent w-full transition-colors resize-none"
-          />
-        </div>
+          {/* Dialog Card box */}
+          <motion.div
+            initial={{ scale: 0.95, opacity: 0, y: 20 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.95, opacity: 0, y: 20 }}
+            transition={{ type: 'spring', duration: 0.4 }}
+            role="dialog"
+            aria-modal="true"
+            className="relative w-full max-w-lg bg-white border border-[#E9E2FF]/60 rounded-[32px] p-6 md:p-8 shadow-[0_20px_50px_rgba(124,92,255,0.08)] z-10 overflow-y-auto max-h-[90vh] text-left scrollbar-none"
+          >
+            {/* Header X close button */}
+            <button
+              onClick={onClose}
+              className="absolute right-6 top-6 p-2 rounded-full hover:bg-gray-50 text-gray-400 hover:text-gray-600 transition-colors"
+              aria-label="Close modal"
+              type="button"
+            >
+              <X className="w-5 h-5" />
+            </button>
 
-        <div className="p-3 bg-slate-950 rounded-xl border border-slate-900 text-xxs text-slate-500 flex gap-2">
-          <BookOpen className="w-4.5 h-4.5 text-brand-tech shrink-0 mt-0.5" />
-          <span>
-            MindCare AI automatically analyzes the sentiment (anxious, positive, neutral, exhausted) of your journal logs to plot your weekly resilience dashboard stats.
-          </span>
-        </div>
+            {/* Header */}
+            <div className="flex items-start gap-4 pr-8">
+              <div className="w-11 h-11 rounded-2xl bg-[#7C5CFF]/8 flex items-center justify-center text-[#7C5CFF] shrink-0">
+                <BookOpen className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-base font-black text-[#1C1C3A] tracking-tight uppercase">Write Journal Entry</h3>
+                <p className="text-[11px] text-[#73768F] font-bold mt-0.5">Reflect on your thoughts and emotions today.</p>
+              </div>
+            </div>
 
-        <Button
-          type="submit"
-          variant="primary"
-          disabled={loading}
-          className="w-full justify-center"
-        >
-          {loading ? 'Saving Journal...' : 'Save Journal Entry'}
-        </Button>
-      </form>
-    </ModalWrapper>
+            {/* Form */}
+            <form onSubmit={handleSubmit} className="space-y-5 mt-6">
+              {errors.submit && (
+                <div className="bg-rose-50/60 border border-rose-100 rounded-xl p-3 text-rose-600 text-[11px] font-bold">
+                  {errors.submit}
+                </div>
+              )}
+
+              {/* Journal Title */}
+              <div className="space-y-1.5">
+                <label htmlFor="journal-title" className="block text-[9px] font-black uppercase tracking-widest text-[#73768F] pl-0.5">
+                  Journal Title
+                </label>
+                <input
+                  id="journal-title"
+                  type="text"
+                  value={title}
+                  onChange={(e) => {
+                    setTitle(e.target.value);
+                    if (errors.title) setErrors(prev => ({ ...prev, title: null }));
+                  }}
+                  placeholder="Today I practiced gratitude"
+                  className={`w-full bg-white border ${errors.title ? 'border-rose-300' : 'border-[#ECE8FF]'} rounded-[14px] px-4 py-3 text-xs text-[#1C1C3A] placeholder-gray-400 focus:outline-none focus:border-[#7C5CFF] focus:ring-1 focus:ring-[#7C5CFF] transition-all font-semibold`}
+                />
+                {errors.title && <span className="text-[10px] text-rose-500 font-extrabold block pl-0.5">{errors.title}</span>}
+              </div>
+
+              {/* Journal Category */}
+              <div className="space-y-1.5">
+                <label htmlFor="journal-category" className="block text-[9px] font-black uppercase tracking-widest text-[#73768F] pl-0.5">
+                  Journal Category
+                </label>
+                <div className="relative">
+                  <select
+                    id="journal-category"
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                    className="w-full bg-white border border-[#ECE8FF] rounded-[14px] px-4 py-3 text-xs text-[#1C1C3A] focus:outline-none focus:border-[#7C5CFF] focus:ring-1 focus:ring-[#7C5CFF] transition-all font-semibold appearance-none cursor-pointer"
+                  >
+                    {CATEGORIES.map((cat) => (
+                      <option key={cat} value={cat}>
+                        {cat}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-[#73768F]">
+                    <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                      <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              {/* Mood Selection */}
+              <div className="space-y-1.5">
+                <label className="block text-[9px] font-black uppercase tracking-widest text-[#73768F] pl-0.5">
+                  Mood
+                </label>
+                <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+                  {MOOD_OPTIONS.map((opt) => (
+                    <button
+                      key={opt.label}
+                      type="button"
+                      onClick={() => setSelectedMood(opt.label)}
+                      className={`py-2 px-1 rounded-xl border flex flex-col items-center justify-center gap-1 transition-all ${
+                        selectedMood === opt.label
+                          ? 'bg-[#F8F5FF] border-[#7C5CFF] text-[#7C5CFF] scale-102 shadow-sm font-black'
+                          : 'bg-white border-[#ECE8FF] text-gray-400 hover:bg-gray-50/50 hover:border-gray-300 font-bold'
+                      }`}
+                    >
+                      <span className="text-base">{opt.emoji}</span>
+                      <span className="text-[8px] uppercase tracking-wider">{opt.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Reflection */}
+              <div className="space-y-1.5">
+                <label htmlFor="journal-reflection" className="block text-[9px] font-black uppercase tracking-widest text-[#73768F] pl-0.5">
+                  Reflection
+                </label>
+                <textarea
+                  id="journal-reflection"
+                  ref={textareaRef}
+                  rows="4"
+                  value={content}
+                  onChange={(e) => {
+                    setContent(e.target.value);
+                    if (errors.content) setErrors(prev => ({ ...prev, content: null }));
+                  }}
+                  placeholder="What happened today?&#10;How did it make you feel?&#10;What did you learn from it?"
+                  className={`w-full bg-white border ${errors.content ? 'border-rose-300' : 'border-[#ECE8FF]'} rounded-[14px] px-4 py-3 text-xs text-[#1C1C3A] placeholder-gray-400 focus:outline-none focus:border-[#7C5CFF] focus:ring-1 focus:ring-[#7C5CFF] transition-all font-semibold resize-none overflow-hidden min-h-[100px]`}
+                />
+                {errors.content && <span className="text-[10px] text-rose-500 font-extrabold block pl-0.5">{errors.content}</span>}
+              </div>
+
+              {/* Tags */}
+              <div className="space-y-1.5">
+                <label className="block text-[9px] font-black uppercase tracking-widest text-[#73768F] pl-0.5">
+                  Tags
+                </label>
+                <div className="flex flex-wrap gap-1.5">
+                  {TAG_OPTIONS.map((tag) => {
+                    const isSelected = selectedTags.includes(tag);
+                    return (
+                      <button
+                        key={tag}
+                        type="button"
+                        onClick={() => {
+                          setSelectedTags(prev =>
+                            isSelected ? prev.filter(t => t !== tag) : [...prev, tag]
+                          );
+                        }}
+                        className={`px-3 py-1.5 rounded-full border text-[9px] font-black tracking-wider uppercase transition-all ${
+                          isSelected
+                            ? 'bg-[#7C5CFF] border-[#7C5CFF] text-white shadow-sm shadow-[#7c5cff]/20'
+                            : 'bg-[#FAF9FF]/60 border-[#ECE8FF] text-[#7C5CFF] hover:bg-[#F8F5FF]'
+                        }`}
+                      >
+                        #{tag}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* AI Analysis Info Box */}
+              <div className="p-4 bg-[#F8F5FF] rounded-2xl border border-[#ECE8FF] text-left flex gap-3">
+                <Sparkles className="w-5 h-5 text-[#7C5CFF] shrink-0 mt-0.5 animate-pulse" />
+                <div>
+                  <h4 className="text-[9px] font-black text-[#1C1C3A] uppercase tracking-wider">AI Wellness Analysis</h4>
+                  <p className="text-[10px] text-[#73768F] font-semibold leading-relaxed mt-1">
+                    MindCare AI will analyze your journal to identify emotional patterns, stress indicators, sentiment, and wellness trends. These insights help personalize your dashboard and recommendations.
+                  </p>
+                </div>
+              </div>
+
+              {/* Actions Grid */}
+              <div className="grid grid-cols-2 gap-4 pt-1">
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="py-3.5 rounded-2xl bg-white border border-[#ECE8FF] text-[#73768F] hover:bg-gray-50 text-xs font-black uppercase tracking-wider active:scale-98 transition-all flex items-center justify-center"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="py-3.5 rounded-2xl bg-[#7C5CFF] hover:bg-[#6846FF] text-white text-xs font-black uppercase tracking-wider active:scale-98 transition-all flex items-center justify-center gap-1.5 shadow-md shadow-[#7C5CFF]/10 disabled:opacity-70 disabled:cursor-not-allowed"
+                >
+                  {loading ? (
+                    <span>Saving...</span>
+                  ) : (
+                    <>
+                      <Star className="w-4 h-4 fill-white" />
+                      <span>Save Journal Entry</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
   );
 };
 

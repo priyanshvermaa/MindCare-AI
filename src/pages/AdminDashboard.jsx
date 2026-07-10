@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import Sidebar from '../components/dashboard/Sidebar';
 import TopNav from '../components/dashboard/TopNav';
 import api from '../services/api';
+import UserAvatar from '../components/ui/UserAvatar';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Users, Crown, Activity, UserPlus, FileText, BarChart3,
@@ -206,7 +207,7 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] text-[#1E1B4B] flex font-poppins select-none relative">
+    <div className="min-h-screen bg-[#FFFFFF] text-[#1E1B4B] flex font-poppins select-none relative">
       
       {/* Sidebar navigation */}
       <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
@@ -471,9 +472,7 @@ export default function AdminDashboard() {
                           
                           {/* User Avatar badge & Name */}
                           <td className="py-4 px-6 flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#7C5CFF] to-[#A88BFF] flex items-center justify-center text-white font-black text-xs shrink-0 shadow-sm">
-                              {initial}
-                            </div>
+                            <UserAvatar user={targetUser} className="w-8 h-8 rounded-full shadow-sm" textClassName="text-xs" />
                             <div className="min-w-0">
                               <span className="font-extrabold text-slate-800 block truncate">
                                 {targetUser.name}
@@ -835,9 +834,7 @@ export default function AdminDashboard() {
             >
               <div className="p-6 bg-gradient-to-r from-[#7C5CFF]/10 to-[#FAF8FF] border-b border-slate-100 flex justify-between items-center shrink-0">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#7C5CFF] to-[#A88BFF] flex items-center justify-center text-white font-black text-sm shrink-0 shadow-sm">
-                    {viewUserDetail.name.charAt(0).toUpperCase()}
-                  </div>
+                  <UserAvatar user={viewUserDetail} className="w-10 h-10 rounded-full shadow-sm" textClassName="text-sm" />
                   <div>
                     <h4 className="font-extrabold text-sm text-slate-900 leading-tight">{viewUserDetail.name}</h4>
                     <span className="text-[9px] font-bold text-gray-400 block uppercase tracking-wider mt-0.5">Diagnostics Overview</span>

@@ -453,6 +453,22 @@ export default function AIInsight({ aiWellness, onOpenMood, onOpenJournal }) {
     }
   }, [activeTab, selectedMetric, aiWellness]);
 
+  if (aiWellness && aiWellness.error) {
+    return (
+      <div className="bg-white border border-rose-100/60 rounded-[24px] p-6 shadow-[0_4px_20px_rgba(244,63,94,0.02)] text-left flex flex-col justify-center items-center h-full min-h-[300px] text-center space-y-3">
+        <div className="w-12 h-12 rounded-full bg-rose-50 flex items-center justify-center text-rose-500">
+          <AlertTriangle className="w-6 h-6 animate-bounce" />
+        </div>
+        <div>
+          <h4 className="text-xs font-extrabold text-rose-800 uppercase tracking-wider">AI Insights Unavailable</h4>
+          <p className="text-[10px] text-rose-650 font-semibold leading-relaxed max-w-[220px] mx-auto mt-1">
+            {aiWellness.error}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   if (!aiWellness) {
     return (
       <div className="bg-white border border-[#E9E2FF]/60 rounded-[24px] p-6 shadow-[0_4px_20px_rgba(124,92,255,0.01)] text-left flex flex-col justify-center items-center h-full min-h-[300px]">
@@ -553,19 +569,39 @@ export default function AIInsight({ aiWellness, onOpenMood, onOpenJournal }) {
         {/* Overall Wellness Summary & Status */}
         <div className="space-y-1.5">
           <span className="text-[9px] font-extrabold text-[#7C5CFF] uppercase tracking-wider">Overall Wellness Summary</span>
-          <p className="text-[11px] text-gray-700 leading-relaxed font-semibold">
-            {aiWellness.overallWellnessSummary}
-          </p>
-          <div className="inline-flex items-center gap-2 bg-[#7C5CFF]/5 border border-[#7C5CFF]/10 px-2.5 py-1 rounded-full text-[10px] font-bold text-[#7C5CFF]">
-            <Activity className="w-3.5 h-3.5 text-[#7C5CFF]" />
-            Score: {aiWellness.overallWellnessScore || 70}% — {aiWellness.currentWellnessStatus}
-          </div>
+          {(() => {
+            const summary = aiWellness.overallWellnessSummary;
+            if (!summary) return <p className="text-[11px] text-gray-400 italic">No summary available.</p>;
+
+            // Try splitting by newline first
+            let lines = summary.split('\n').map(l => l.replace(/^[\s•\-\*]+/, '').trim()).filter(Boolean);
+            
+            // If it's a single paragraph with no bullets, split by sentence boundary to convert to bullet points
+            if (lines.length === 1 && !summary.includes('•') && !summary.includes('-') && !summary.includes('*')) {
+              const sentenceRegex = /[^.!?]+[.!?]+(\s|$)/g;
+              const matches = summary.match(sentenceRegex);
+              if (matches && matches.length > 1) {
+                lines = matches.map(s => s.trim());
+              }
+            }
+
+            return (
+              <ul className="text-[11px] text-gray-750 leading-relaxed font-semibold list-none pl-0 space-y-1 text-left">
+                {lines.map((line, idx) => (
+                  <li key={idx} className="flex items-start gap-1.5">
+                    <span className="text-[#7C5CFF] mt-1 text-[12px] font-bold select-none">•</span>
+                    <span>{line}</span>
+                  </li>
+                ))}
+              </ul>
+            );
+          })()}
         </div>
 
         {activeTab === 'insights' ? (
           <div className="space-y-4">
             {/* Top Positive Habit & Area for Improvement */}
-            <div className="grid grid-cols-2 gap-3">
+            <div className="flex flex-col gap-3">
               <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-100 space-y-1">
                 <div className="flex items-center gap-1 text-emerald-600">
                   <TrendingUp className="w-3.5 h-3.5 font-bold" />
@@ -584,34 +620,6 @@ export default function AIInsight({ aiWellness, onOpenMood, onOpenJournal }) {
                 <p className="text-[9.5px] text-amber-800 font-semibold leading-snug">
                   {aiWellness.biggestAreaForImprovement}
                 </p>
-              </div>
-            </div>
-
-            {/* Next Best Action */}
-            <div className="p-3 rounded-xl bg-violet-50/50 border border-violet-100 space-y-1">
-              <div className="flex items-center gap-1 text-violet-650">
-                <Target className="w-3.5 h-3.5 font-bold text-violet-600" />
-                <span className="text-[8px] font-extrabold uppercase tracking-wider text-violet-600">Next Best Action</span>
-              </div>
-              <p className="text-[10px] text-violet-900 font-bold leading-snug">
-                {aiWellness.nextBestAction}
-              </p>
-            </div>
-
-            {/* Three Personalized Recommendations */}
-            <div className="space-y-2">
-              <span className="text-[9px] font-extrabold text-[#7C5CFF] uppercase tracking-wider">Recommendations</span>
-              <div className="space-y-2">
-                {recommendations.slice(0, 3).map((rec, i) => (
-                  <div key={i} className="flex items-start gap-2.5 p-2.5 rounded-xl bg-[#FAF9FF] border border-[#E9E2FF]/40">
-                    <div className="p-1 rounded-md bg-[#7C5CFF]/10 text-[#7C5CFF] font-black text-[9px] shrink-0 w-5 h-5 flex items-center justify-center">
-                      {i + 1}
-                    </div>
-                    <p className="text-[10px] text-gray-650 font-semibold leading-relaxed">
-                      {rec}
-                    </p>
-                  </div>
-                ))}
               </div>
             </div>
           </div>

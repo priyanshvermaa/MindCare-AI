@@ -9,11 +9,63 @@ import {
   Trash2, LogOut, AlertCircle, Settings as SettingsIcon, Heart, ArrowRight
 } from 'lucide-react';
 import api from '../services/api';
+import UserAvatar from '../components/ui/UserAvatar';
+
+const compressImage = (file) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (event) => {
+      const img = new Image();
+      img.src = event.target.result;
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+        
+        const MAX_WIDTH = 800;
+        const MAX_HEIGHT = 800;
+        
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height *= MAX_WIDTH / width;
+            width = MAX_WIDTH;
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width *= MAX_HEIGHT / height;
+            height = MAX_HEIGHT;
+          }
+        }
+        
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        
+        canvas.toBlob((blob) => {
+          if (blob) {
+            const compressedFile = new File([blob], file.name, {
+              type: 'image/jpeg',
+              lastModified: Date.now()
+            });
+            resolve(compressedFile);
+          } else {
+            resolve(file);
+          }
+        }, 'image/jpeg', 0.85);
+      };
+      img.onerror = (err) => reject(err);
+    };
+    reader.onerror = (err) => reject(err);
+  });
+};
 
 export default function Settings() {
-  const { user, logout, updateUserProfile, refreshUserProfile } = useAuth();
+  const { user, setUser, logout, updateUserProfile, refreshUserProfile } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const { isLightMode } = useTheme();
+  const [selectedFile, setSelectedFile] = useState(null);
 
   // Active Tab Settings Section
   const [activeTab, setActiveTab] = useState('profile'); // 'profile', 'security', 'notifications', 'account'
@@ -116,12 +168,33 @@ export default function Settings() {
     if (e) e.preventDefault();
     setSaving(true);
     try {
+      let profilePicturePath = profileForm.avatar;
+
+      if (selectedFile) {
+        const formData = new FormData();
+        formData.append('profilePicture', selectedFile);
+
+        const uploadRes = await api.put('/users/profile-picture', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });
+
+        if (uploadRes.data.success) {
+          profilePicturePath = uploadRes.data.user.profilePicture;
+          setSelectedFile(null);
+        } else {
+          throw new Error(uploadRes.data.message || 'Profile picture upload failed.');
+        }
+      }
+
       const payload = {
         name: profileForm.name,
         username: profileForm.username,
         email: profileForm.email,
         phoneNumber: profileForm.phoneNumber,
-        avatar: profileForm.avatar,
+        avatar: profilePicturePath,
+        profilePicture: profilePicturePath,
         age: profileForm.age ? parseInt(profileForm.age, 10) : null,
         notifications: notificationsForm
       };
@@ -129,11 +202,16 @@ export default function Settings() {
       const response = await api.put('/settings', payload);
       if (response.data.success) {
         triggerMessage('success', response.data.message || 'Settings saved successfully!');
-        await refreshUserProfile();
+        
+        // Fetch fresh profile state to update AuthContext immediately
+        const meRes = await api.get('/auth/me');
+        if (meRes.data.success) {
+          setUser(meRes.data.user);
+        }
       }
     } catch (err) {
       console.error(err);
-      triggerMessage('error', err.response?.data?.message || 'Failed to save settings.');
+      triggerMessage('error', err.response?.data?.message || err.message || 'Failed to save settings.');
     } finally {
       setSaving(false);
     }
@@ -365,18 +443,11 @@ export default function Settings() {
                       <div className="space-y-2">
                         <label className="block text-[10px] font-extrabold uppercase tracking-wider text-[#73768F] pl-0.5">Profile Picture</label>
                         <div className="flex flex-col sm:flex-row gap-5 items-center bg-white p-5 rounded-2xl border border-[#E9E2FF] shadow-sm">
-                          {profileForm.avatar ? (
-                            <img
-                              src={profileForm.avatar}
-                              alt="Profile Preview"
-                              className="w-14 h-14 rounded-full object-cover border border-[#E9E2FF] shrink-0 shadow-md"
-                              onError={(e) => { e.target.src = 'https://via.placeholder.com/150'; }}
-                            />
-                          ) : (
-                            <div className="w-14 h-14 rounded-full bg-gradient-to-tr from-[#7C5CFF] to-[#A88BFF] flex items-center justify-center text-white font-black text-xl shrink-0 shadow-md shadow-[#7C5CFF]/20">
-                              {profileForm.name ? profileForm.name.charAt(0).toUpperCase() : 'U'}
-                            </div>
-                          )}
+                          <UserAvatar 
+                            user={{ name: profileForm.name, profilePicture: profileForm.avatar }} 
+                            className="w-14 h-14 rounded-full border border-[#E9E2FF] shadow-md shadow-[#7C5CFF]/10" 
+                            textClassName="text-xl" 
+                          />
                           <div className="flex-1 w-full">
                             <input
                               type="file"
@@ -384,11 +455,26 @@ export default function Settings() {
                               onChange={(e) => {
                                 const file = e.target.files[0];
                                 if (file) {
-                                  const reader = new FileReader();
-                                  reader.onloadend = () => {
-                                    setProfileForm({ ...profileForm, avatar: reader.result });
-                                  };
-                                  reader.readAsDataURL(file);
+                                  const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+                                  if (!allowedTypes.includes(file.type)) {
+                                    triggerMessage('error', 'Only JPG, JPEG, PNG, and WEBP files are allowed.');
+                                    return;
+                                  }
+                                  compressImage(file).then(compressedFile => {
+                                    if (compressedFile.size > 2 * 1024 * 1024) {
+                                      triggerMessage('error', 'Compressed image size must be less than 2 MB.');
+                                      return;
+                                    }
+                                    setSelectedFile(compressedFile);
+                                    const reader = new FileReader();
+                                    reader.onloadend = () => {
+                                      setProfileForm(prev => ({ ...prev, avatar: reader.result }));
+                                    };
+                                    reader.readAsDataURL(compressedFile);
+                                  }).catch(err => {
+                                    console.error(err);
+                                    triggerMessage('error', 'Image processing failed.');
+                                  });
                                 }
                               }}
                               className="block w-full text-[10px] text-gray-550 file:mr-4 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-[10px] file:font-extrabold file:uppercase file:bg-[#F8F5FF] file:text-[#7C5CFF] hover:file:bg-[#E9E2FF] cursor-pointer font-bold"

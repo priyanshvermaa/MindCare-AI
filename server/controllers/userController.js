@@ -1,5 +1,11 @@
 import User from '../models/User.js';
 import { clearAICache, generateWellnessAnalysis, getRecommendedSleepRange, recalculateUserWellnessScores } from '../services/aiService.js';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // GET /api/user/profile
 export const getUserProfile = async (req, res) => {
@@ -20,7 +26,9 @@ export const getUserProfile = async (req, res) => {
       height: user.height !== undefined && user.height !== null ? user.height : null,
       weight: user.weight !== undefined && user.weight !== null ? user.weight : null,
       activityLevel: user.activityLevel || '',
-      wellnessGoal: user.wellnessGoal || ''
+      wellnessGoal: user.wellnessGoal || '',
+      profilePicture: user.profilePicture || user.avatar || '',
+      avatar: user.avatar || ''
     };
 
     if (!user.onboardingCompleted && (user.age === null || user.age === undefined)) {
@@ -113,7 +121,9 @@ export const updateUserProfile = async (req, res) => {
       height: user.height,
       weight: user.weight,
       activityLevel: user.activityLevel,
-      wellnessGoal: user.wellnessGoal
+      wellnessGoal: user.wellnessGoal,
+      profilePicture: user.profilePicture || user.avatar || '',
+      avatar: user.avatar || ''
     };
 
     if (!user.onboardingCompleted && (user.age === null || user.age === undefined)) {
@@ -127,5 +137,73 @@ export const updateUserProfile = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+
+// PUT /api/users/profile-picture
+export const uploadProfilePicture = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: 'Please upload a file.' });
+    }
+
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found.' });
+    }
+
+    // Delete old profile picture if stored locally
+    if (user.profilePicture && user.profilePicture.startsWith('/uploads/')) {
+      const oldPath = path.join(__dirname, '..', user.profilePicture);
+      if (fs.existsSync(oldPath)) {
+        try {
+          fs.unlinkSync(oldPath);
+        } catch (err) {
+          console.warn('Failed to delete old profile picture:', err);
+        }
+      }
+    }
+
+    const filePath = `/uploads/${req.file.filename}`;
+    user.profilePicture = filePath;
+    user.avatar = filePath;
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Profile picture updated successfully!',
+      user: {
+        _id: user._id,
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        profilePicture: user.profilePicture,
+        avatar: user.avatar
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// GET /api/users
+export const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find({ isDeleted: { $ne: true } }).select('_id name email role profilePicture avatar');
+    res.status(200).json({
+      success: true,
+      users: users.map(u => ({
+        _id: u._id,
+        id: u._id,
+        name: u.name,
+        email: u.email,
+        role: u.role,
+        profilePicture: u.profilePicture || u.avatar || '',
+        avatar: u.avatar || ''
+      }))
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
 };

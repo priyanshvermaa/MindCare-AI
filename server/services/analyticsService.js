@@ -1,6 +1,7 @@
 import Mood from '../models/Mood.js';
 import JournalEntry from '../models/JournalEntry.js';
 import WellnessStats from '../models/WellnessStats.js';
+import Habit from '../models/Habit.js';
 import mongoose from 'mongoose';
 
 /**
@@ -10,10 +11,29 @@ export const calculateStreaks = async (userId) => {
   try {
     const moodDates = await Mood.find({ userId, isDeleted: false }).select('createdAt');
     const journalDates = await JournalEntry.find({ user: userId, isDeleted: false }).select('createdAt');
+    const habits = await Habit.find({ userId });
+    
+    const habitCompletedDates = [];
+    habits.forEach(h => {
+      if (h.completedDates) {
+        habitCompletedDates.push(...h.completedDates);
+      }
+    });
+
+    const wellnessStats = await WellnessStats.find({ user: userId });
+    const wellnessDates = wellnessStats.map(w => {
+      try {
+        return w.date.toISOString().split('T')[0];
+      } catch (e) {
+        return null;
+      }
+    }).filter(Boolean);
 
     const allDates = [
       ...moodDates.map(d => d.createdAt.toISOString().split('T')[0]),
-      ...journalDates.map(d => d.createdAt.toISOString().split('T')[0])
+      ...journalDates.map(d => d.createdAt.toISOString().split('T')[0]),
+      ...habitCompletedDates,
+      ...wellnessDates
     ];
 
     const uniqueDates = Array.from(new Set(allDates)).sort();
@@ -26,10 +46,12 @@ export const calculateStreaks = async (userId) => {
       tempStreak = 1;
       longestStreak = 1;
       for (let i = 1; i < uniqueDates.length; i++) {
-        const prev = new Date(uniqueDates[i - 1]);
-        const curr = new Date(uniqueDates[i]);
+        const prevParts = uniqueDates[i - 1].split('-');
+        const prev = new Date(prevParts[0], prevParts[1] - 1, prevParts[2]);
+        const currParts = uniqueDates[i].split('-');
+        const curr = new Date(currParts[0], currParts[1] - 1, currParts[2]);
         const diffTime = Math.abs(curr - prev);
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
         if (diffDays === 1) {
           tempStreak++;
         } else if (diffDays > 1) {
@@ -41,18 +63,20 @@ export const calculateStreaks = async (userId) => {
       }
 
       // Check current streak activity (must have logged today or yesterday)
-      const lastLogDate = new Date(uniqueDates[uniqueDates.length - 1]);
+      const lastParts = uniqueDates[uniqueDates.length - 1].split('-');
+      const lastLogDate = new Date(lastParts[0], lastParts[1] - 1, lastParts[2]);
       const today = new Date();
       today.setHours(0, 0, 0, 0);
-      lastLogDate.setHours(0, 0, 0, 0);
       const diffTime = Math.abs(today - lastLogDate);
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
 
       if (diffDays <= 1) {
         currentStreak = tempStreak;
       } else {
         currentStreak = 0;
       }
+
+      longestStreak = Math.max(longestStreak, currentStreak);
     }
 
     return { currentStreak, longestStreak };

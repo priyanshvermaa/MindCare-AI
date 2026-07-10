@@ -8,6 +8,8 @@ import {
   getResumeSessions,
   playMeditation,
   saveProgress,
+  getFavoriteMeditations,
+  toggleMeditationFavorite,
   // admin
   createMeditation,
   updateMeditation,
@@ -30,10 +32,12 @@ router.get('/featured', getFeaturedMeditation);
 router.get('/stats', getUserMeditationStats);
 router.get('/recommendations', getRecommendations);
 router.get('/motivation', getMotivationQuote);
+router.get('/favorites', getFavoriteMeditations);
 router.get('/recently-played', getResumeSessions);
 
 router.post('/:id/play', playMeditation);
 router.post('/:id/progress', saveProgress);
+router.post('/:id/favorite', toggleMeditationFavorite);
 
 // Admin routes
 router.get('/admin/stats', authorizeRoles('admin'), getAdminStats);

@@ -34,7 +34,11 @@ const journalEntrySchema = new mongoose.Schema(
     },
     category: {
       type: String,
-      enum: ['free-writing', 'gratitude', 'daily-reflection', 'cbt'],
+      enum: [
+        'free-writing', 'gratitude', 'daily-reflection', 'cbt',
+        'Daily Reflection', 'Gratitude', 'CBT Reflection', 'Positive Thoughts',
+        'Anxiety', 'Stress', 'Sleep', 'Personal Growth'
+      ],
       default: 'free-writing',
     },
     favorite: {

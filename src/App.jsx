@@ -16,6 +16,8 @@ import Wellness from './pages/Wellness';
 import Community from './pages/Community';
 import SelfCareLibrary from './pages/SelfCareLibrary';
 import MeditationMindfulness from './pages/MeditationMindfulness';
+import MeditationArticleView from './pages/MeditationArticleView';
+import MeditationVideoView from './pages/MeditationVideoView';
 import Settings from './pages/Settings';
 import AdminDashboard from './pages/AdminDashboard';
 import WaterIntake from './pages/WaterIntake';
@@ -69,6 +71,22 @@ function App() {
             element={
               <ProtectedRoute>
                 <Journal />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/meditation/article/:id"
+            element={
+              <ProtectedRoute>
+                <MeditationArticleView />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/meditation/video/:id"
+            element={
+              <ProtectedRoute>
+                <MeditationVideoView />
               </ProtectedRoute>
             }
           />

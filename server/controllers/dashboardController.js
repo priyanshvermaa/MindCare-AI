@@ -6,6 +6,7 @@ import Goal from '../models/Goal.js';
 import Habit from '../models/Habit.js';
 import Meditation from '../models/Meditation.js';
 import UserMeditation from '../models/UserMeditation.js';
+import MeditationHistory from '../models/MeditationHistory.js';
 import Notification from '../models/Notification.js';
 import WellnessProfile from '../models/WellnessProfile.js';
 import DailyWaterSummary from '../models/DailyWaterSummary.js';
@@ -698,10 +699,16 @@ export const logMood = async (req, res) => {
  */
 export const logJournal = async (req, res) => {
   const userId = req.user._id;
-  const { title, content } = req.body;
+  const { title, content, reflection, category, mood, tags } = req.body;
+
+  const actualContent = content || reflection;
+
+  if (!title || !actualContent) {
+    return res.status(400).json({ message: 'Title and content/reflection are required.' });
+  }
 
   let sentiment = 'neutral';
-  const lowercaseContent = content.toLowerCase();
+  const lowercaseContent = actualContent.toLowerCase();
 
   if (
     lowercaseContent.includes('stressed') ||
@@ -730,10 +737,15 @@ export const logJournal = async (req, res) => {
   try {
     const newEntry = await JournalEntry.create({
       user: userId,
-      title,
-      content,
+      title: title.trim(),
+      content: actualContent,
+      category: category || 'free-writing',
+      mood: mood || null,
+      tags: Array.isArray(tags) ? tags : [],
       sentiment,
     });
+
+    clearAICache(userId);
 
     res.status(201).json({
       success: true,
@@ -945,10 +957,38 @@ export const getAIDashboardWellness = async (req, res) => {
 
     const totalLogs = moodCount + journalCount + waterCount + meditationCount + sleepCount + habitCount;
     if (totalLogs === 0) {
-      return res.status(200).json({
+      const defaultAnalysis = {
+        overallWellnessSummary: "• No telemetry data logged yet\n• Start tracking metrics to see AI insights",
+        currentWellnessStatus: "No telemetry data logged yet.",
+        topPositiveHabit: "No habits tracked yet",
+        biggestAreaForImprovement: "No data",
+        sleepAnalysis: "No sleep data",
+        moodTrend: "No mood logged yet",
+        hydrationAnalysis: "No hydration data",
+        journalAnalysis: "No entries",
+        exerciseAnalysis: "No data",
+        meditationAnalysis: "No data",
+        habitConsistency: "No data",
+        overallWellnessScore: 0,
+        personalizedRecommendations: [
+          "Log your mood daily to help track resilience triggers.",
+          "Track your hydration intake.",
+          "Record your sleep hours."
+        ],
+        nextBestAction: "Complete your first daily check-in."
+      };
+      const responsePayload = {
         success: true,
         hasInsights: false,
-        message: 'No wellness data available yet.'
+        wellnessAnalysis: defaultAnalysis,
+        wellnessTip: defaultAnalysis.overallWellnessSummary,
+        dailyInsight: defaultAnalysis.moodTrend,
+        suggestedActivity: defaultAnalysis.nextBestAction,
+        lastConversation: null
+      };
+      return res.status(200).json({
+        ...responsePayload,
+        data: responsePayload
       });
     }
 
@@ -959,17 +999,22 @@ export const getAIDashboardWellness = async (req, res) => {
       .sort({ updatedAt: -1 })
       .select('_id title updatedAt');
 
-    res.status(200).json({
+    const responsePayload = {
       success: true,
       wellnessAnalysis,
-      // Keep legacy fields in case other modules depend on them directly
-      wellnessTip: wellnessAnalysis.personalizedRecommendation,
-      dailyInsight: wellnessAnalysis.todaySummary,
-      suggestedActivity: wellnessAnalysis.meditationSummary,
+      wellnessTip: wellnessAnalysis.overallWellnessSummary || wellnessAnalysis.personalizedRecommendation,
+      dailyInsight: wellnessAnalysis.moodTrend || wellnessAnalysis.todaySummary,
+      suggestedActivity: wellnessAnalysis.nextBestAction || wellnessAnalysis.meditationSummary,
       lastConversation: lastChat || null
+    };
+
+    res.status(200).json({
+      ...responsePayload,
+      data: responsePayload
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("AI Wellness Error:", error);
+    res.status(200).json({ success: false, message: error.message });
   }
 };
 

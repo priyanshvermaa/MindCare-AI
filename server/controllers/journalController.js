@@ -1,4 +1,5 @@
 import JournalEntry from '../models/JournalEntry.js';
+import { calculateStreaks } from '../services/analyticsService.js';
 import { clearAICache } from '../services/aiService.js';
 
 import { askGrok } from '../services/grokService.js';
@@ -330,11 +331,7 @@ export const generateSummary = async (req, res) => {
     );
 
     if (!result) {
-      return res.status(200).json({
-        success: true,
-        summary: 'AI summary is not available at the moment. Please ensure your GROQ_API_KEY is configured.',
-        cached: false,
-      });
+      throw new Error('AI summary response was empty.');
     }
 
     // Cache the summary
@@ -343,7 +340,8 @@ export const generateSummary = async (req, res) => {
 
     res.status(200).json({ success: true, summary: result, cached: true });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('❌ Error during AI summary generation:', error.stack || error);
+    res.status(500).json({ success: false, message: `AI summary generation failed: ${error.message}` });
   }
 };
 
@@ -370,10 +368,7 @@ export const detectTone = async (req, res) => {
     );
 
     if (!result) {
-      return res.status(200).json({
-        success: true,
-        tone: { primaryTone: 'unknown', secondaryTone: 'unknown', intensity: 'medium', explanation: 'AI tone detection is not available. Please configure GROQ_API_KEY.' },
-      });
+      throw new Error('AI tone response was empty.');
     }
 
     // Try parsing JSON response
@@ -389,7 +384,8 @@ export const detectTone = async (req, res) => {
 
     res.status(200).json({ success: true, tone: parsed });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('❌ Error during AI tone detection:', error.stack || error);
+    res.status(500).json({ success: false, message: `AI tone detection failed: ${error.message}` });
   }
 };
 
@@ -416,14 +412,7 @@ export const getReflectionQuestions = async (req, res) => {
     );
 
     if (!result) {
-      return res.status(200).json({
-        success: true,
-        questions: [
-          'What emotions did you feel most strongly while writing this?',
-          'How might you view this situation differently in a week?',
-          'What would you tell a friend experiencing the same thing?',
-        ],
-      });
+      throw new Error('AI reflection questions response was empty.');
     }
 
     let questions;
@@ -435,7 +424,8 @@ export const getReflectionQuestions = async (req, res) => {
 
     res.status(200).json({ success: true, questions });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('❌ Error during AI reflection generation:', error.stack || error);
+    res.status(500).json({ success: false, message: `AI reflection generation failed: ${error.message}` });
   }
 };
 
@@ -462,14 +452,7 @@ export const getInsights = async (req, res) => {
     );
 
     if (!result) {
-      return res.status(200).json({
-        success: true,
-        insights: {
-          strength: 'You showed self-awareness by journaling today.',
-          reframe: 'Every challenge is an opportunity for growth.',
-          affirmation: 'You are doing better than you think.',
-        },
-      });
+      throw new Error('AI insights response was empty.');
     }
 
     let insights;
@@ -481,7 +464,8 @@ export const getInsights = async (req, res) => {
 
     res.status(200).json({ success: true, insights });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('❌ Error during AI insights generation:', error.stack || error);
+    res.status(500).json({ success: false, message: `AI insights generation failed: ${error.message}` });
   }
 };
 
@@ -518,13 +502,14 @@ export const getWeeklyReflection = async (req, res) => {
       combinedContent
     );
 
-    res.status(200).json({
-      success: true,
-      reflection: result || 'Weekly reflection is not available. Please configure GROQ_API_KEY for AI features.',
-      entriesCount: recentEntries.length,
-    });
+    if (!result) {
+      throw new Error('AI weekly reflection response was empty.');
+    }
+
+    res.status(200).json({ success: true, reflection: result, entriesCount: recentEntries.length });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('❌ Error during AI weekly reflection generation:', error.stack || error);
+    res.status(500).json({ success: false, message: `AI weekly reflection failed: ${error.message}` });
   }
 };
 
@@ -559,46 +544,8 @@ export const getJournalAnalytics = async (req, res) => {
     const categoryFrequency = {};
     categoryAgg.forEach((c) => { categoryFrequency[c._id] = c.count; });
 
-    // Writing streak (consecutive calendar days)
-    const allEntries = await JournalEntry.find({ user: userId, isDeleted: false })
-      .sort({ createdAt: -1 })
-      .select('createdAt');
-
-    const loggedDays = new Set(allEntries.map((e) => getFormattedLocalDate(e.createdAt)));
-    let currentStreak = 0;
-    let longestStreak = 0;
-    let checkDate = new Date();
-    let dateStr = getFormattedLocalDate(checkDate);
-
-    // If no entry today, start from yesterday
-    if (!loggedDays.has(dateStr)) {
-      checkDate.setDate(checkDate.getDate() - 1);
-      dateStr = getFormattedLocalDate(checkDate);
-    }
-
-    while (loggedDays.has(dateStr)) {
-      currentStreak++;
-      checkDate.setDate(checkDate.getDate() - 1);
-      dateStr = getFormattedLocalDate(checkDate);
-    }
-
-    // Longest streak (brute force through all dates)
-    if (loggedDays.size > 0) {
-      const sortedDays = Array.from(loggedDays).sort();
-      let tempStreak = 1;
-      for (let i = 1; i < sortedDays.length; i++) {
-        const prev = new Date(sortedDays[i - 1]);
-        const curr = new Date(sortedDays[i]);
-        const diff = (curr - prev) / (1000 * 60 * 60 * 24);
-        if (diff === 1) {
-          tempStreak++;
-        } else {
-          longestStreak = Math.max(longestStreak, tempStreak);
-          tempStreak = 1;
-        }
-      }
-      longestStreak = Math.max(longestStreak, tempStreak);
-    }
+    // Writing streak (synchronized calendar days)
+    const { currentStreak, longestStreak } = await calculateStreaks(userId);
 
     // Mood correlation (most common moods in journals)
     const moodAgg = await JournalEntry.aggregate([

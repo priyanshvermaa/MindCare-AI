@@ -139,7 +139,7 @@ export default function Analytics() {
   }) || [];
 
   return (
-    <div className="min-h-screen bg-[#FCFBFF] text-[#1E1B4B] flex font-poppins select-none">
+    <div className="min-h-screen bg-[#FFFFFF] text-[#1E1B4B] flex font-poppins select-none">
       
       {/* Sidebar hidden when printing */}
       <div className="print:hidden">

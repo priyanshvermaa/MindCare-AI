@@ -22,6 +22,7 @@ export const getSettings = async (req, res) => {
         name: user.name,
         email: user.email,
         avatar: user.avatar || '',
+        profilePicture: user.profilePicture || user.avatar || '',
         age: user.age || null,
         notifications: settings.notifications,
         appearance: settings.appearance
@@ -40,6 +41,7 @@ export const updateSettings = async (req, res) => {
     username,
     phoneNumber,
     avatar,
+    profilePicture,
     age,
     notifications,
     appearance
@@ -60,7 +62,14 @@ export const updateSettings = async (req, res) => {
     if (username !== undefined) user.username = username;
     if (phoneNumber !== undefined) user.phoneNumber = phoneNumber;
     let ageChanged = false;
-    if (avatar !== undefined) user.avatar = avatar;
+    if (avatar !== undefined) {
+      user.avatar = avatar;
+      user.profilePicture = avatar;
+    }
+    if (profilePicture !== undefined) {
+      user.profilePicture = profilePicture;
+      user.avatar = profilePicture;
+    }
     if (age !== undefined) {
       const parsedAge = parseInt(age, 10);
       if (isNaN(parsedAge) || parsedAge < 1 || parsedAge > 120) {
@@ -106,7 +115,8 @@ export const updateSettings = async (req, res) => {
         phoneNumber: user.phoneNumber,
         name: user.name,
         email: user.email,
-        avatar: user.avatar,
+        avatar: user.avatar || '',
+        profilePicture: user.profilePicture || user.avatar || '',
         age: user.age,
         notifications: settings.notifications,
         appearance: settings.appearance

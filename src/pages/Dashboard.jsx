@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useWater } from '../context/WaterContext';
 import Sidebar from '../components/dashboard/Sidebar';
@@ -11,8 +12,8 @@ import {
 } from '../components/dashboard/DashboardModals';
 import WaterModal from '../components/WaterModal/WaterModal';
 import SleepModal from '../components/SleepModal/SleepModal';
-import { AlertCircle, Sparkles } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { AlertCircle, Sparkles, CheckCircle } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import api from '../services/api';
 
 // Redesigned Subcomponents
@@ -24,10 +25,9 @@ import AIInsight from './Dashboard/AIInsight';
 import MoodChart from './Dashboard/MoodChart';
 import WeeklyProgress from './Dashboard/WeeklyProgress';
 import Checklist from './Dashboard/Checklist';
-import ContinueJourney from './Dashboard/ContinueJourney';
-import ReminderPanel from './Dashboard/ReminderPanel';
 
 export default function Dashboard() {
+  const navigate = useNavigate();
   const { user, updateUserAge } = useAuth();
   const { waterSummary, fetchWaterTelemetry } = useWater();
 
@@ -60,21 +60,50 @@ export default function Dashboard() {
   const [featuredMeditation, setFeaturedMeditation] = useState(null);
   const [latestJournal, setLatestJournal] = useState(null);
   const [aiAnalysis, setAiAnalysis] = useState(null);
+  const [toast, setToast] = useState(null);
+
+  const triggerToast = (message) => {
+    setToast(message);
+    setTimeout(() => setToast(null), 4000);
+  };
 
   const fetchDashboardData = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const [statsRes, chartsRes, aiRes] = await Promise.all([
+      const results = await Promise.allSettled([
         api.get('/dashboard/stats'),
         api.get('/dashboard/charts'),
         api.get('/dashboard/ai-wellness'),
         fetchWaterTelemetry(new Date(), false)
       ]);
 
-      setStats(statsRes.data.stats);
-      setCharts(chartsRes.data.charts);
-      setAiAnalysis(aiRes.data.hasInsights === false ? { hasInsights: false } : aiRes.data.wellnessAnalysis);
+      const statsRes = results[0].status === 'fulfilled' ? results[0].value : null;
+      const chartsRes = results[1].status === 'fulfilled' ? results[1].value : null;
+      const aiRes = results[2].status === 'fulfilled' ? results[2].value : null;
+
+      if (statsRes) {
+        setStats(statsRes.data.stats);
+      } else {
+        console.warn('Failed to fetch dashboard statistics:', results[0].reason?.message);
+      }
+
+      if (chartsRes) {
+        setCharts(chartsRes.data.charts);
+      } else {
+        console.warn('Failed to fetch dashboard charts:', results[1].reason?.message);
+      }
+
+      if (aiRes) {
+        setAiAnalysis(aiRes.data.hasInsights === false ? { hasInsights: false } : aiRes.data.wellnessAnalysis);
+      } else {
+        console.warn('Failed to fetch AI wellness insights:', results[2].reason?.message);
+        setAiAnalysis({ error: 'Unable to load AI insights right now. Please try again later.' });
+      }
+
+      if (results[0].status === 'rejected') {
+        setError('Unable to load wellness dashboard stats right now. Please try again later.');
+      }
 
       // Fetch Goals and Habits metadata
       try {
@@ -108,7 +137,7 @@ export default function Dashboard() {
 
     } catch (err) {
       console.error('Failed to load dashboard statistics:', err);
-      setError('Failed to fetch dashboard data. Please try again.');
+      setError('Unable to load wellness dashboard stats right now. Please try again later.');
     } finally {
       setLoading(false);
     }
@@ -178,7 +207,7 @@ export default function Dashboard() {
                   <QuickActions 
                     onOpenMood={() => setActiveModal('mood')}
                     onOpenJournal={() => setActiveModal('journal')}
-                    onOpenWellness={() => setActiveModal('wellness')}
+                    onOpenWellness={() => navigate('/wellness')}
                   />
                 </div>
                 <div className="lg:col-span-4">
@@ -208,15 +237,7 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              {/* Row 5: Continuation cards list & Upcoming timeline calendars */}
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8 items-stretch">
-                <div className="lg:col-span-8">
-                  <ContinueJourney />
-                </div>
-                <div className="lg:col-span-4">
-                  <ReminderPanel goals={goals} />
-                </div>
-              </div>
+
 
             </div>
           )}
@@ -233,7 +254,10 @@ export default function Dashboard() {
       <JournalModal
         isOpen={activeModal === 'journal'}
         onClose={() => setActiveModal(null)}
-        onSuccess={fetchDashboardData}
+        onSuccess={() => {
+          fetchDashboardData();
+          triggerToast('Journal saved successfully.');
+        }}
       />
       <WellnessModal
         isOpen={activeModal === 'wellness'}
@@ -323,6 +347,25 @@ export default function Dashboard() {
           </motion.div>
         </div>
       )}
+
+      {/* Toast Notification Alert */}
+      <AnimatePresence>
+        {toast && (
+          <motion.div
+            initial={{ opacity: 0, y: -20, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.9 }}
+            className="fixed top-6 right-6 z-[100] bg-white border border-[#E9E2FF] rounded-[20px] px-5 py-4 shadow-[0_15px_40px_rgba(124,92,255,0.1)] flex items-center gap-3 text-[#1C1C3A] text-xs font-black tracking-wide min-w-[280px]"
+          >
+            <div className="w-8 h-8 rounded-full bg-[#7C5CFF]/10 flex items-center justify-center text-[#7C5CFF] shrink-0">
+              <CheckCircle className="w-4.5 h-4.5" />
+            </div>
+            <div>
+              <span className="block">{toast}</span>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
     </div>
   );

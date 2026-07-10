@@ -60,6 +60,10 @@ const userSchema = new mongoose.Schema(
       default: 'local',
     },
     avatar: String,
+    profilePicture: {
+      type: String,
+      default: ''
+    },
     emailVerified: {
       type: Boolean,
       default: false,

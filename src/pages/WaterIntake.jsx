@@ -311,7 +311,7 @@ export default function WaterIntake() {
   const strokeOffset = arcLength * (1 - Math.min(100, percentage) / 100);
 
   return (
-    <div className="min-h-screen bg-[#FAFBFF] text-[#1C1C3A] font-poppins select-none relative overflow-x-hidden">
+    <div className="min-h-screen bg-[#FFFFFF] text-[#1C1C3A] font-poppins select-none relative overflow-x-hidden">
       <ConfettiEffect active={showConfetti} />
 
       {/* Toasts wrapper */}

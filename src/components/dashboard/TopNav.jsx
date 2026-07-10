@@ -5,6 +5,7 @@ import { useTheme } from '../../context/ThemeContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
+import UserAvatar from '../ui/UserAvatar';
 
 export default function TopNav({ onMenuToggle, isDashboard = false }) {
   const { user, logout } = useAuth();
@@ -101,14 +102,7 @@ export default function TopNav({ onMenuToggle, isDashboard = false }) {
         {/* Right side: Actions, Notifications, Profile */}
         <div className="flex items-center gap-6">
 
-          {/* Theme Toggle */}
-          <button
-            onClick={handleToggleTheme}
-            className="h-10 w-10 flex items-center justify-center rounded-full border border-[#E5E7EB] text-gray-500 hover:text-[#7C5CFF] hover:bg-gray-50 transition-all"
-            aria-label="Toggle Dark/Light Mode"
-          >
-            {isLightMode ? <Moon className="w-4.5 h-4.5" /> : <Sun className="w-4.5 h-4.5" />}
-          </button>
+
 
           {/* Notification Center */}
           <div className="relative" ref={notificationsRef}>
@@ -184,15 +178,13 @@ export default function TopNav({ onMenuToggle, isDashboard = false }) {
                   setShowProfileMenu(!showProfileMenu);
                   setShowNotifications(false);
                 }}
-                className="flex items-center gap-2 h-10 p-1 pr-3.5 rounded-full border border-[#E5E7EB] hover:border-gray-300 transition-all text-gray-700 hover:bg-gray-50/50"
+                className="flex items-center gap-2.5 h-11 p-1 pr-4 rounded-full border border-[#E5E7EB] hover:border-gray-300 transition-all text-gray-700 hover:bg-gray-50/50"
               >
-                <div className="w-7.5 h-7.5 rounded-full bg-gradient-to-tr from-[#7C5CFF] to-[#A88BFF] flex items-center justify-center text-white font-extrabold text-xs shadow-sm">
-                  {user.name.charAt(0).toUpperCase()}
-                </div>
-                <span className="hidden sm:inline text-xs font-extrabold tracking-wide truncate max-w-[80px]">
+                <UserAvatar user={user} className="w-9 h-9 rounded-full" textClassName="text-sm" />
+                <span className="hidden sm:inline text-sm font-extrabold tracking-wide truncate max-w-[100px]">
                   {user.name.split(' ')[0]}
                 </span>
-                <span className="text-[8px] text-gray-400 ml-0.5 select-none">▼</span>
+                <span className="text-[9px] text-gray-400 ml-0.5 select-none">▼</span>
               </button>
 
               <AnimatePresence>
@@ -225,14 +217,15 @@ export default function TopNav({ onMenuToggle, isDashboard = false }) {
                     <button
                       onClick={() => {
                         setShowProfileMenu(false);
-                        navigate('/wellness');
+                        navigate('/wellness#achievement-badges');
+                        if (window.location.pathname === '/wellness') {
+                          const el = document.getElementById('achievement-badges');
+                          if (el) el.scrollIntoView({ behavior: 'smooth' });
+                        }
                       }}
                       className="flex items-center gap-3 w-full px-3.5 py-2 rounded-xl text-xs text-gray-700 hover:text-[#7C5CFF] hover:bg-gray-50 transition-all text-left font-bold"
                     >
                       <Heart className="w-4 h-4 text-[#7C5CFF]" /> Calming Targets
-                    </button>
-                    <button className="flex items-center gap-3 w-full px-3.5 py-2 rounded-xl text-xs text-gray-700 hover:text-[#7C5CFF] hover:bg-gray-50 transition-all text-left font-bold">
-                      <HelpCircle className="w-4 h-4" /> Support Portal
                     </button>
 
                     <div className="h-px bg-gray-100 my-2"></div>

@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import Meditation from '../models/Meditation.js';
 import UserMeditation from '../models/UserMeditation.js';
 import MeditationHistory from '../models/MeditationHistory.js';
@@ -357,6 +358,10 @@ export const playMeditation = async (req, res) => {
   const userId = req.user._id;
   const meditationId = req.params.id;
 
+  if (!mongoose.Types.ObjectId.isValid(meditationId)) {
+    return res.status(400).json({ message: 'Invalid meditation ID format.' });
+  }
+
   try {
     let up = await UserMeditation.findOne({ userId, meditationId });
     if (!up) {
@@ -386,6 +391,10 @@ export const saveProgress = async (req, res) => {
   const userId = req.user._id;
   const meditationId = req.params.id;
   const { currentTime, progress } = req.body;
+
+  if (!mongoose.Types.ObjectId.isValid(meditationId)) {
+    return res.status(400).json({ message: 'Invalid meditation ID format.' });
+  }
 
   try {
     const med = await Meditation.findById(meditationId);
@@ -583,6 +592,75 @@ export const deleteQuote = async (req, res) => {
   try {
     await DailyMotivation.findByIdAndDelete(id);
     res.status(200).json({ success: true, message: 'Quote successfully deleted' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+/**
+ * @desc    GET user favorite meditation sessions
+ * @route   GET /api/meditations/favorites
+ * @access  Private
+ */
+export const getFavoriteMeditations = async (req, res) => {
+  const userId = req.user._id;
+
+  try {
+    const userFavorites = await UserMeditation.find({ userId, favorite: true }).populate('meditationId');
+    const favoritesList = userFavorites
+      .filter(um => um.meditationId !== null)
+      .map(um => {
+        return {
+          ...um.meditationId.toObject(),
+          progress: um.progress || 0,
+          currentTime: um.currentTime || 0,
+          completed: um.completed || false,
+          favorite: true
+        };
+      });
+
+    res.status(200).json({ success: true, favorites: favoritesList });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+/**
+ * @desc    POST toggle favorite status of a meditation session
+ * @route   POST /api/meditations/:id/favorite
+ * @access  Private
+ */
+export const toggleMeditationFavorite = async (req, res) => {
+  const userId = req.user._id;
+  const meditationId = req.params.id;
+
+  if (!mongoose.Types.ObjectId.isValid(meditationId)) {
+    return res.status(400).json({ message: 'Invalid meditation ID format.' });
+  }
+
+  try {
+    const med = await Meditation.findById(meditationId);
+    if (!med) {
+      return res.status(404).json({ message: 'Meditation not found' });
+    }
+
+    let up = await UserMeditation.findOne({ userId, meditationId });
+    if (!up) {
+      up = await UserMeditation.create({
+        userId,
+        meditationId,
+        favorite: true
+      });
+    } else {
+      up.favorite = !up.favorite;
+      await up.save();
+    }
+
+    res.status(200).json({ 
+      success: true, 
+      message: up.favorite ? 'Added to favorites.' : 'Removed from favorites.',
+      favorite: up.favorite 
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

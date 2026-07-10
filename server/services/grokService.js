@@ -6,14 +6,16 @@ const GROK_MODEL = process.env.XAI_MODEL || 'grok-beta';
 
 let groqClient = null;
 
-// Initialize Groq client as a fallback option
-try {
-  if (process.env.GROQ_API_KEY) {
-    groqClient = new Groq({ apiKey: process.env.GROQ_API_KEY });
+const getGroqClient = () => {
+  if (!groqClient && process.env.GROQ_API_KEY) {
+    try {
+      groqClient = new Groq({ apiKey: process.env.GROQ_API_KEY });
+    } catch (error) {
+      console.error('❌ Failed to initialize Groq SDK:', error.message);
+    }
   }
-} catch (error) {
-  console.error('❌ Failed to initialize Groq SDK fallback:', error.message);
-}
+  return groqClient;
+};
 
 const SYSTEM_PROMPT = `You are the MindCare AI Wellness Assistant. Your goal is to guide corporate employees and wellness practitioners toward emotional resilience and mental health mindfulness.
 You are supporting the user using cognitive behavioral therapy (CBT) principles, box-breathing guidance, stress/burnout alerts, gratitude prompts, and motivational feedback.
@@ -59,14 +61,16 @@ export const callGrokCompletions = async (messages, options = {}) => {
         console.error(`[Grok Service] API Error (Status ${response.status}):`, errText);
       }
     } catch (err) {
-      console.error('[Grok Service] Connection Error:', err.message);
+      console.error('[Grok Service] Connection Error:', err.stack || err.message);
+      throw err;
     }
   }
 
   // Fallback to Groq SDK
-  if (groqClient) {
+  const client = getGroqClient();
+  if (client) {
     try {
-      const completion = await groqClient.chat.completions.create({
+      const completion = await client.chat.completions.create({
         model: 'llama-3.3-70b-versatile',
         messages,
         temperature: options.temperature ?? 0.7,
@@ -75,11 +79,12 @@ export const callGrokCompletions = async (messages, options = {}) => {
       });
       return completion.choices?.[0]?.message?.content || '';
     } catch (err) {
-      console.error('[Grok Service] Groq SDK Fallback Error:', err.message);
+      console.error('[Grok Service] Groq SDK Fallback Error:', err.stack || err.message);
+      throw err;
     }
   }
 
-  return '';
+  throw new Error('No AI provider keys (XAI_API_KEY / GROQ_API_KEY) configured or initialized.');
 };
 
 // Compile 7-day user telemetry into a textual context summary for the system prompt

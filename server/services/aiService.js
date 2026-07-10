@@ -510,6 +510,48 @@ export const formatUserTelemetryText = (data) => {
 
 export const generateLocalWellnessAnalysis = (data) => {
   const moods = data.moods || [];
+  const totalLogs = moods.length + 
+                    (data.journals?.length || 0) + 
+                    (data.waterSummaries?.length || 0) + 
+                    (data.meditationHistory?.length || 0) + 
+                    (data.habits?.length || 0);
+
+  if (totalLogs === 0) {
+    return {
+      overallWellnessSummary: "Start tracking your wellness activities to receive personalized AI insights.",
+      currentWellnessStatus: "No data logged yet",
+      topPositiveHabit: "No habits tracked yet.",
+      biggestAreaForImprovement: "No data",
+      sleepAnalysis: "No sleep data",
+      moodTrend: "No mood logged yet",
+      hydrationAnalysis: "No hydration data",
+      journalAnalysis: "No entries",
+      exerciseAnalysis: "No data",
+      meditationAnalysis: "No data",
+      habitConsistency: "No data",
+      
+      mentalWellnessStatus: "No data",
+      physicalWellnessStatus: "No data",
+      emotionalTrends: "No data",
+      habitAnalysis: "No data",
+      behaviourCorrelations: "No correlations identified yet.",
+      positiveChanges: "None",
+      areasNeedingAttention: "None",
+      riskFactors: "None",
+      todayPriority: "Complete your first daily check-in.",
+      weeklySummary: "No data logged yet.",
+      longTermProgress: "No baseline progress established.",
+      
+      personalizedRecommendations: [
+        "Log your mood daily to help track resilience triggers.",
+        "Track your hydration intake.",
+        "Record your sleep hours."
+      ],
+      nextBestAction: "Complete your first daily check-in.",
+      overallWellnessScore: 0
+    };
+  }
+
   const avgMood = moods.length > 0 ? (moods.reduce((sum, m) => sum + (m.score || 5), 0) / moods.length).toFixed(1) : '7.0';
   const avgStress = moods.length > 0 ? (moods.reduce((sum, m) => sum + (m.stressLevel || 3), 0) / moods.length).toFixed(1) : '3.0';
 
@@ -536,32 +578,32 @@ export const generateLocalWellnessAnalysis = (data) => {
   const sleepRating = ratingObj.rating;
 
   // Overall Wellness Summary
-  const overallWellnessSummary = `Your average sleep is ${avgSleep} hours (${sleepRating}), and average hydration is at ${avgWater} ml. Mood telemetry shows an average score of ${avgMood}/10 with stress levels at ${avgStress}/10.`;
+  const overallWellnessSummary = `• Avg sleep: ${avgSleep}h (${sleepRating})\n• Avg hydration: ${avgWater} ml\n• Mood avg: ${avgMood}/10 (stress: ${avgStress}/10)`;
 
   // Current Wellness Status
   let currentWellnessStatus = 'Your emotional resilience and daily telemetry are stable today.';
   if (calculatedWellnessScore >= 80) {
-    currentWellnessStatus = 'You are in an optimal wellness state with consistent sleep and excellent hydration.';
+    currentWellnessStatus = 'You are in an optimal wellness state.';
   } else if (calculatedWellnessScore < 60) {
-    currentWellnessStatus = 'Your wellness telemetry indicates signs of fatigue or high stress patterns.';
+    currentWellnessStatus = 'Your wellness telemetry indicates signs of fatigue or high stress.';
   }
 
   // Top Positive Habit
-  let topPositiveHabit = 'You are consistently tracking your daily metrics in MongoDB.';
+  let topPositiveHabit = 'Daily metric tracking';
   if (waterStreak > 1) {
-    topPositiveHabit = `Excellent consistency in keeping a ${waterStreak}-day hydration streak!`;
+    topPositiveHabit = `Hydration streak: ${waterStreak} days`;
   } else if (sleepRating === 'Excellent' || sleepRating === 'Good') {
-    topPositiveHabit = `Great sleep hygiene, maintaining a ${sleepRating} (${avgSleep} hours) sleep schedule.`;
+    topPositiveHabit = `Good sleep hygiene (${avgSleep}h)`;
   } else if (parseFloat(avgMeditation) >= 10) {
-    topPositiveHabit = `Consistent mindfulness practice with ${avgMeditation} minutes of daily meditation.`;
+    topPositiveHabit = `Daily meditation (${avgMeditation}m)`;
   }
 
   // Biggest Area for Improvement
-  let biggestAreaForImprovement = 'Maintaining physical routines consistently throughout the week.';
+  let biggestAreaForImprovement = 'Physical consistency';
   if (sleepRating.startsWith('Poor')) {
-    biggestAreaForImprovement = ratingObj.explanation;
+    biggestAreaForImprovement = `Low sleep average (${avgSleep}h)`;
   } else if (avgWater < 1200) {
-    biggestAreaForImprovement = `Low daily hydration level (${avgWater} ml), which is below your target goal of ${waterGoal} ml.`;
+    biggestAreaForImprovement = `Low hydration (${avgWater}ml)`;
   }
 
   // Analyses
@@ -947,6 +989,18 @@ export const generateWellnessAnalysis = async (userId) => {
 
   // Load user data from MongoDB
   const telemetryData = await compileFullUserTelemetry(userId);
+  const totalLogs = (telemetryData.moods?.length || 0) + 
+                    (telemetryData.journals?.length || 0) + 
+                    (telemetryData.waterSummaries?.length || 0) + 
+                    (telemetryData.meditationHistory?.length || 0) + 
+                    (telemetryData.habits?.length || 0);
+
+  if (totalLogs === 0) {
+    console.log(`[AI ASSISTANT AUDIT] Insufficient telemetry data for User ID: ${userId}. Returning local defaults.`);
+    const localAnalysis = generateLocalWellnessAnalysis(telemetryData);
+    return localAnalysis;
+  }
+
   const textContext = formatUserTelemetryText(telemetryData);
 
   const systemPrompt = `You are a professional medical wellness and clinical health AI analyzer. You output ONLY raw JSON.`;
@@ -955,10 +1009,10 @@ ${textContext}
 
 Generate a comprehensive wellness analysis JSON object containing exactly these fields (do not wrap in markdown tags or extra text, just raw JSON):
 {
-  "overallWellnessSummary": "1-2 sentence overall summary of user wellness. Correlate sleep, mood, hydration, meditation, and active exercise categories dynamically based on actual logs. Ensure you re-evaluate based on age targets.",
+  "overallWellnessSummary": "A concise bulleted list summarizing the user's wellness. Use exactly 2-3 short, distinct bullet points separated by newlines (each starting with '• '). Keep each bullet point under 10 words. Do not write a long paragraph.",
   "currentWellnessStatus": "A summary statement indicating their current emotional/physical resilience status.",
-  "topPositiveHabit": "Highlight of their top positive habit based on real stats.",
-  "biggestAreaForImprovement": "Highlight of their biggest risk area or concern.",
+  "topPositiveHabit": "Highlight of their top positive habit based on real stats. Keep it extremely short, direct, and straightforward (max 6-8 words). Do not explain much.",
+  "biggestAreaForImprovement": "Highlight of their biggest risk area or concern. Keep it extremely short, direct, and straightforward (max 6-8 words). Do not explain much.",
   "sleepAnalysis": "Analysis of sleep hours relative to recommended hours.",
   "moodTrend": "Analysis of stress patterns.",
   "hydrationAnalysis": "Analysis of water intake vs goals.",

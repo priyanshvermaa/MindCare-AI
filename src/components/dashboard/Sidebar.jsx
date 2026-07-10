@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import UserAvatar from '../ui/UserAvatar';
 
 export default function Sidebar({ isOpen, setIsOpen }) {
   const { logout, user } = useAuth();
@@ -78,9 +79,7 @@ export default function Sidebar({ isOpen, setIsOpen }) {
       <div className="p-4 border-t border-[#E5E7EB] flex flex-col gap-2 shrink-0 bg-gray-50/50">
         {isOpen && user && (
           <div className="flex items-center gap-3 px-3 py-2.5 bg-white rounded-2xl border border-[#E5E7EB] shadow-sm mb-1 text-left">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#7C5CFF] to-[#A88BFF] flex items-center justify-center text-white font-black text-xs shrink-0 shadow-sm">
-              {user.name.charAt(0).toUpperCase()}
-            </div>
+            <UserAvatar user={user} className="w-10 h-10 rounded-full" textClassName="text-xs" />
             <div className="overflow-hidden">
               <span className="font-extrabold text-xs text-gray-900 block truncate leading-tight">
                 {user.name === 'Test User' ? 'Priyansh Verma' : user.name}

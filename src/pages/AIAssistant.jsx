@@ -6,6 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { Skeleton } from '../components/ui/Skeleton';
 import api from '../services/api';
+import UserAvatar from '../components/ui/UserAvatar';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Sparkles, Send, Plus, Search, Trash2, Copy, RefreshCw, Download, MessageSquare,
@@ -265,7 +266,7 @@ export default function AIAssistant() {
   );
 
   return (
-    <div className="min-h-screen bg-[#FCFBFF] text-[#1F1F2E] flex font-poppins">
+    <div className="min-h-screen bg-[#FFFFFF] text-[#1F1F2E] flex font-poppins">
       
       {/* Sidebar navigation */}
       <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
@@ -496,9 +497,12 @@ export default function AIAssistant() {
                         </div>
 
                         {!isAI && (
-                          <div className="w-9 h-9 rounded-xl bg-[#7C5CFF]/10 border border-[#7C5CFF]/20 flex items-center justify-center shrink-0 text-[#7C5CFF] font-extrabold text-xs uppercase shadow">
-                            {(user?.name || 'U').charAt(0).toUpperCase()}
-                          </div>
+                          <UserAvatar 
+                            user={user} 
+                            className="w-9 h-9 rounded-xl shadow" 
+                            textClassName="text-xs uppercase" 
+                            fallbackClassName="bg-[#7C5CFF]/10 border border-[#7C5CFF]/20 text-[#7C5CFF] font-extrabold" 
+                          />
                         )}
                       </motion.div>
                     );

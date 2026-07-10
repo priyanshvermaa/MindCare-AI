@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { 
   AlertTriangle, Phone, MessageSquare, ShieldAlert, Heart, 
-  CheckCircle, Play, ChevronRight, Activity, Wind, Eye 
+  CheckCircle, Play, ChevronRight, Activity, Wind, Eye, X 
 } from 'lucide-react';
 
 const CRISIS_LINES_DEFAULTS = [

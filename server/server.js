@@ -1,3 +1,4 @@
+import './config/env.js';
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
@@ -25,6 +26,7 @@ import notificationRoutes from './routes/notificationRoutes.js';
 import settingsRoutes from './routes/settingsRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import meditationRoutes from './routes/meditationRoutes.js';
+import meditationModuleRoutes from './routes/meditationModuleRoutes.js';
 import quoteRoutes from './routes/quoteRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import passport from 'passport';
@@ -32,6 +34,7 @@ import './config/passport.js';
 import oauthRoutes from './routes/oauthRoutes.js';
 import waterRoutes from './routes/waterRoutes.js';
 import bookmarkRoutes from './routes/bookmarkRoutes.js';
+import badgeRoutes from './routes/badgeRoutes.js';
 
 import { seedInitialData } from './utils/seeder.js';
 
@@ -88,7 +91,9 @@ app.use(cors({
   },
   credentials: true,
 }));
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use(passport.initialize());
 
 // Logger middleware for testing
@@ -112,10 +117,13 @@ app.use('/api/notifications', notificationRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/meditations', meditationRoutes);
+app.use('/api/meditation', meditationModuleRoutes);
 app.use('/api/quotes', quoteRoutes);
 app.use('/api/water', waterRoutes);
 app.use('/api/user', userRoutes);
+app.use('/api/users', userRoutes);
 app.use('/api/bookmarks', bookmarkRoutes);
+app.use('/api/badges', badgeRoutes);
 
 // Authentication Routes
 app.post('/api/auth/register', register);
@@ -136,7 +144,8 @@ app.get('/api/auth/me', protect, (req, res) => {
     name: user.name,
     email: user.email,
     role: user.role,
-    avatar: user.avatar,
+    avatar: user.avatar || '',
+    profilePicture: user.profilePicture || user.avatar || '',
     age: user.age,
     recommendedSleep: user.recommendedSleep,
     profileCompleted: user.profileCompleted,

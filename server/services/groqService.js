@@ -2,16 +2,16 @@ import Groq from 'groq-sdk';
 
 let groqClient = null;
 
-// Initialize Groq client if key is available
-try {
-  if (process.env.GROQ_API_KEY) {
-    groqClient = new Groq({ apiKey: process.env.GROQ_API_KEY });
-  } else {
-    console.warn('⚠️ GROQ_API_KEY is not defined. AI Assistant running in fallback mock mode.');
+const getGroqClient = () => {
+  if (!groqClient && process.env.GROQ_API_KEY) {
+    try {
+      groqClient = new Groq({ apiKey: process.env.GROQ_API_KEY });
+    } catch (error) {
+      console.error('❌ Failed to initialize Groq SDK:', error.message);
+    }
   }
-} catch (error) {
-  console.error('❌ Failed to initialize Groq SDK:', error.message);
-}
+  return groqClient;
+};
 
 const SYSTEM_PROMPT = `You are the MindCare AI Wellness Assistant. Your goal is to guide corporate employees and wellness practitioners toward emotional resilience and mental health mindfulness.
 You are supporting the user using cognitive behavioral therapy (CBT) principles, box-breathing guidance, stress/burnout alerts, gratitude prompts, and motivational feedback.
@@ -146,12 +146,13 @@ export const generateChatResponse = async (chatHistory, newUserMessage, userCont
   }
 
   // 2. Fallback to Groq SDK
-  if (!groqClient) {
+  const client = getGroqClient();
+  if (!client) {
     return generateFallbackChatResponse(newUserMessage, userContext);
   }
 
   try {
-    const completion = await groqClient.chat.completions.create({
+    const completion = await client.chat.completions.create({
       model: 'llama-3.3-70b-versatile',
       messages,
       temperature: 0.7,

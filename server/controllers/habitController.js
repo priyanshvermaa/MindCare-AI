@@ -1,6 +1,7 @@
 import Habit from '../models/Habit.js';
 import { clearAICache } from '../services/aiService.js';
 import { grantXP, getOrCreateProfile } from '../services/gamificationService.js';
+import { calculateStreaks } from '../services/analyticsService.js';
 
 /**
  * @desc    Create a new daily habit
@@ -214,14 +215,11 @@ export const getHabitStreakAnalytics = async (req, res) => {
   try {
     const habits = await Habit.find({ userId });
     const profile = await getOrCreateProfile(userId);
+    const { currentStreak, longestStreak } = await calculateStreaks(userId);
 
     const totalHabits = habits.length;
     const completedToday = habits.filter(h => h.completed).length;
     const completionRate = totalHabits > 0 ? Math.round((completedToday / totalHabits) * 100) : 0;
-
-    // Calculate maximum active streak across all habits
-    const maxActiveStreak = habits.reduce((max, h) => Math.max(max, h.streak), 0);
-    const maxLongestStreak = habits.reduce((max, h) => Math.max(max, h.longestStreak), 0);
 
     res.status(200).json({
       success: true,
@@ -229,8 +227,8 @@ export const getHabitStreakAnalytics = async (req, res) => {
         totalHabits,
         completedToday,
         completionRate,
-        currentStreak: maxActiveStreak,
-        longestStreak: maxLongestStreak,
+        currentStreak,
+        longestStreak,
         badges: profile.badges,
         achievements: profile.achievements,
         xp: profile.xp,

@@ -7,11 +7,25 @@ import api from '../services/api';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Heart, Plus, Trash2, Award, Flame, Sparkles, Check,
-  BookOpen, Activity, Moon, Target, Compass, Droplet, TrendingUp, MoreHorizontal
+  BookOpen, Activity, Moon, Target, Compass, Droplet, TrendingUp, MoreHorizontal, Sun,
+  Calendar, Smile, Trophy, X
 } from 'lucide-react';
 
 const CATEGORIES = ['Mindfulness', 'Physical', 'Work', 'Nutrition', 'Social'];
 const PRIORITIES = ['low', 'medium', 'high'];
+
+const BADGE_ICONS = {
+  Heart: Heart,
+  BookOpen: BookOpen,
+  Droplet: Droplet,
+  Flame: Flame,
+  Moon: Moon,
+  Compass: Compass,
+  Sparkles: Sparkles,
+  Target: Target,
+  Plus: Plus,
+  Award: Award
+};
 
 const getHabitIcon = (category) => {
   const cat = category.toLowerCase();
@@ -30,6 +44,8 @@ export default function Wellness() {
   // Data States
   const [goals, setGoals] = useState([]);
   const [habits, setHabits] = useState([]);
+  const [badges, setBadges] = useState([]);
+  const [flippedBadges, setFlippedBadges] = useState([]);
   const [gamification, setGamification] = useState({
     xp: 0,
     level: 1,
@@ -60,19 +76,23 @@ export default function Wellness() {
 
   // active menu for habit delete dropdowns
   const [activeHabitMenuId, setActiveHabitMenuId] = useState(null);
+  const [hoveredBadge, setHoveredBadge] = useState(null);
+  const [selectedBadge, setSelectedBadge] = useState(null);
 
   // Fetch Data
   const fetchWellnessData = async () => {
     try {
-      const [goalsRes, habitsRes, streakRes] = await Promise.all([
+      const [goalsRes, habitsRes, streakRes, badgesRes] = await Promise.all([
         api.get('/goals'),
         api.get('/habits'),
-        api.get('/habits/streak')
+        api.get('/habits/streak'),
+        api.get('/badges')
       ]);
 
       setGoals(goalsRes.data.goals || []);
       setHabits(habitsRes.data.habits || []);
       setGamification(streakRes.data.analytics);
+      setBadges(badgesRes.data.badges || []);
     } catch (err) {
       console.error('Failed to load wellness data:', err);
     } finally {
@@ -83,6 +103,17 @@ export default function Wellness() {
   useEffect(() => {
     fetchWellnessData();
   }, []);
+
+  useEffect(() => {
+    if (!loading && window.location.hash === '#achievement-badges') {
+      const element = document.getElementById('achievement-badges');
+      if (element) {
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }, 200);
+      }
+    }
+  }, [loading]);
 
   const triggerXpAlert = (amount) => {
     setXpUpdateAlert(amount > 0 ? `+${amount} XP` : `${amount} XP`);
@@ -219,8 +250,23 @@ export default function Wellness() {
     pathD = `M ${points.join(' L ')}`;
   }
 
+  const highlightText = (text, highlight) => {
+    if (!highlight) return text;
+    const parts = text.split(highlight);
+    if (parts.length > 1) {
+      return (
+        <>
+          {parts[0]}
+          <span className="text-[#E11D48] font-black">{highlight}</span>
+          {parts[1]}
+        </>
+      );
+    }
+    return text;
+  };
+
   return (
-    <div className="min-h-screen bg-[#FAF8FF] text-[#1E1B4B] flex font-poppins select-none relative">
+    <div className="min-h-screen bg-[#FFFFFF] text-[#1E1B4B] flex font-poppins select-none relative">
       
       {/* Sidebar navigation */}
       <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
@@ -253,7 +299,7 @@ export default function Wellness() {
                 </motion.div>
               )}
             </AnimatePresence>
-
+ 
             <div>
               <h1 className="text-[28px] font-black text-[#1E1B4B] tracking-tight flex items-center gap-2">
                 <Heart className="w-7 h-7 text-rose-500 fill-rose-500/10" /> Wellness & Habits
@@ -261,21 +307,6 @@ export default function Wellness() {
               <p className="text-[16px] text-[#6B7280] mt-1 font-semibold leading-relaxed">
                 Track healthy routines, build resilience, and improve your mental wellbeing every day.
               </p>
-            </div>
-
-            <div className="flex gap-4 shrink-0 pb-1">
-              <button
-                onClick={() => setShowHabitModal(true)}
-                className="flex items-center gap-1.5 px-4.5 py-3 rounded-[14px] border border-[#ECE7FF] bg-white hover:bg-gray-50 text-[#1E1B4B] font-extrabold text-[14px] shadow-[0_8px_30px_rgba(124,92,255,0.08)] transition-all"
-              >
-                <Plus className="w-4.5 h-4.5" /> Add Habit
-              </button>
-              <button
-                onClick={() => setShowGoalModal(true)}
-                className="flex items-center gap-1.5 px-5 py-3 rounded-[14px] bg-gradient-to-r from-[#7C5CFF] to-[#A78BFA] text-white font-extrabold text-[14px] uppercase tracking-wider shadow-[0_8px_30px_rgba(124,92,255,0.08)] transition-all"
-              >
-                <Plus className="w-4.5 h-4.5" /> Create Goal
-              </button>
             </div>
           </div>
 
@@ -285,448 +316,513 @@ export default function Wellness() {
               <Skeleton className="lg:col-span-3 h-[350px] rounded-[24px] bg-white border border-[#ECE7FF]" />
             </div>
           ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            <div className="space-y-6">
               
-              {/* Left Column (70% = col-span-9 of 12-column grid) */}
-              <div className="lg:col-span-9 space-y-6">
-                
-                {/* Statistics Cards Row */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {/* Statistics Cards Row */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 w-full">
                   
                   {/* Card 1: Wellness Score */}
-                  <div className="bg-white rounded-[24px] p-6 shadow-[0_8px_30px_rgba(124,92,255,0.08)] border border-[#ECE7FF] flex items-center justify-between min-h-[140px] hover:-translate-y-0.5 transition-all duration-300">
-                    <div className="text-left flex flex-col justify-center h-full">
-                      <span className="text-[14px] font-bold uppercase tracking-wider text-gray-400 block mb-1">Wellness Score</span>
-                      <span className="text-[28px] font-black text-[#1E1B4B] block leading-none">{wellnessScore}%</span>
-                      <div className="flex items-center gap-1.5 mt-2">
-                        <span className="text-xxs text-emerald-500 font-bold">▲ +12%</span>
-                        <span className="text-[9px] text-[#6B7280] font-semibold">vs last week</span>
+                  <div className="bg-white border border-[#E9E2FF]/60 p-5 rounded-[24px] shadow-[0_4px_20px_rgba(124,92,255,0.015)] hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex flex-col justify-between min-h-[125px]">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8.5 h-8.5 rounded-xl bg-rose-50 flex items-center justify-center text-rose-500 shrink-0">
+                        <Heart className="w-4.5 h-4.5" />
                       </div>
+                      <span className="text-[9px] font-extrabold text-[#73768F] uppercase tracking-wider">Wellness Score</span>
                     </div>
-                    {/* Ring gauge */}
-                    <div className="w-14 h-14 relative flex items-center justify-center shrink-0">
-                      <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
-                        <circle cx="18" cy="18" r="15" fill="none" stroke="#F4F0FF" strokeWidth="2.5" />
-                        <circle
-                          cx="18" cy="18" r="15" fill="none" stroke="#7C5CFF" strokeWidth="2.5"
-                          strokeDasharray="100" strokeDashoffset={100 - wellnessScore}
-                          strokeLinecap="round"
-                        />
-                      </svg>
-                      <div className="absolute flex items-center justify-center text-[10px] font-black text-[#7C5CFF]">{wellnessScore}%</div>
+                    <div className="mt-2 space-y-1">
+                      <span className="text-2.5xl font-black text-gray-900 leading-none block">{wellnessScore}%</span>
+                      <span className="text-[9px] text-[#6B7280] font-extrabold block">Overall Routine Status</span>
                     </div>
                   </div>
 
                   {/* Card 2: Current Streak */}
-                  <div className="bg-white rounded-[24px] p-6 shadow-[0_8px_30px_rgba(124,92,255,0.08)] border border-[#ECE7FF] flex items-center justify-between min-h-[140px] hover:-translate-y-0.5 transition-all duration-300">
-                    <div className="text-left flex flex-col justify-center h-full">
-                      <span className="text-[14px] font-bold uppercase tracking-wider text-gray-400 block mb-1">Current Streak</span>
-                      <span className="text-[28px] font-black text-[#1E1B4B] block leading-none">{gamification.currentStreak ?? 0} Days</span>
-                      <div className="flex items-center gap-1.5 mt-2">
-                        <span className="text-xxs text-emerald-500 font-bold">▲ 2 days</span>
-                        <span className="text-[9px] text-[#6B7280] font-semibold">vs last week</span>
+                  <div className="bg-white border border-[#E9E2FF]/60 p-5 rounded-[24px] shadow-[0_4px_20px_rgba(124,92,255,0.015)] hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex flex-col justify-between min-h-[125px]">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8.5 h-8.5 rounded-xl bg-orange-50 flex items-center justify-center text-orange-500 shrink-0">
+                        <Flame className="w-4.5 h-4.5 fill-orange-500" />
                       </div>
+                      <span className="text-[9px] font-extrabold text-[#73768F] uppercase tracking-wider">Current Streak</span>
                     </div>
-                    <div className="w-14 h-14 rounded-full bg-orange-50 border border-orange-100 flex items-center justify-center text-orange-500 shrink-0 shadow-sm">
-                      <Flame className="w-6 h-6 fill-orange-500" />
+                    <div className="mt-2 space-y-1">
+                      <span className="text-2.5xl font-black text-gray-900 leading-none block flex items-center gap-1">
+                        {gamification.currentStreak ?? 0} Days <span className="text-xs text-emerald-500">🔥</span>
+                      </span>
+                      <span className="text-[9px] text-emerald-550 font-extrabold block">Keep it going!</span>
                     </div>
                   </div>
 
                   {/* Card 3: Longest Streak */}
-                  <div className="bg-white rounded-[24px] p-6 shadow-[0_8px_30px_rgba(124,92,255,0.08)] border border-[#ECE7FF] flex items-center justify-between min-h-[140px] hover:-translate-y-0.5 transition-all duration-300">
-                    <div className="text-left flex flex-col justify-center h-full">
-                      <span className="text-[14px] font-bold uppercase tracking-wider text-gray-400 block mb-1">Longest Streak</span>
-                      <span className="text-[28px] font-black text-[#1E1B4B] block leading-none">{gamification.longestStreak ?? 0} Days</span>
-                      <div className="flex items-center gap-1.5 mt-2">
-                        <span className="text-xxs text-emerald-500 font-bold">▲ New record</span>
-                        <span className="text-[9px] text-emerald-550 font-black">Record Badge</span>
+                  <div className="bg-white border border-[#E9E2FF]/60 p-5 rounded-[24px] shadow-[0_4px_20px_rgba(124,92,255,0.015)] hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex flex-col justify-between min-h-[125px]">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8.5 h-8.5 rounded-xl bg-amber-50 flex items-center justify-center text-amber-500 shrink-0">
+                        <Award className="w-4.5 h-4.5" />
+                      </div>
+                      <span className="text-[9px] font-extrabold text-[#73768F] uppercase tracking-wider">Longest Streak</span>
+                    </div>
+                    <div className="mt-2 space-y-1">
+                      <span className="text-2.5xl font-black text-gray-900 leading-none block">{gamification.longestStreak ?? 0} Days</span>
+                      <span className="text-[9px] text-gray-400 font-extrabold block">All-time Record</span>
+                    </div>
+                  </div>
+
+                  {/* Card 4: Wellness Index */}
+                  <div className="bg-white border border-[#E9E2FF]/60 p-5 rounded-[24px] shadow-[0_4px_20px_rgba(124,92,255,0.015)] hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex flex-col justify-between min-h-[125px]">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8.5 h-8.5 rounded-xl bg-[#7C5CFF]/8 flex items-center justify-center text-[#7C5CFF] shrink-0">
+                        <Trophy className="w-4.5 h-4.5" />
+                      </div>
+                      <span className="text-[9px] font-extrabold text-[#73768F] uppercase tracking-wider">Wellness Index</span>
+                    </div>
+                    <div className="mt-2 space-y-1">
+                      <span className="text-2.5xl font-black text-gray-900 leading-none block">{habits.length > 0 || goals.length > 0 ? wellnessScore : 0}%</span>
+                      <div className="flex gap-2 text-[9px] text-gray-450 font-extrabold">
+                        <span>Phy: {habits.length > 0 ? Math.min(100, Math.round(gamification.completionRate)) : 0}%</span>
+                        <span>•</span>
+                        <span>Men: {gamification.level > 1 || gamification.xp > 0 ? Math.min(100, Math.round(gamification.level * 10)) : 0}%</span>
                       </div>
                     </div>
-                    <div className="w-14 h-14 rounded-full bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-500 shrink-0 shadow-sm">
-                      <Award className="w-6 h-6" />
-                    </div>
                   </div>
-                </div>
+              </div>
 
-                {/* Daily Habits checklist */}
-                <div className="bg-white rounded-[24px] border border-[#ECE7FF] p-6 shadow-[0_8px_30px_rgba(124,92,255,0.08)] space-y-6 min-h-[300px] flex flex-col justify-between">
-                  <div>
-                    <div className="flex justify-between items-center select-none border-b border-gray-50 pb-3">
-                      <h3 className="text-[20px] font-extrabold text-[#1E1B4B] flex items-center gap-2">
-                        <Check className="w-5.5 h-5.5 text-[#7C5CFF]" /> Daily Habits Checklist
-                      </h3>
-                      <button
-                        onClick={fetchWellnessData}
-                        className="text-[14px] text-[#7C5CFF] hover:underline font-extrabold uppercase tracking-wider"
-                      >
-                        Today's Logs
-                      </button>
-                    </div>
-
-                    {habits.length > 0 ? (
-                      <div className="divide-y divide-gray-50 mt-2">
-                        {habits.map((habit) => {
-                          const habitMeta = getHabitIcon(habit.habitName);
-                          const HabitIcon = habitMeta.Icon;
-                          return (
-                            <div
-                              key={habit._id}
-                              className={`py-3.5 flex justify-between items-center transition-all ${
-                                habit.completed ? 'opacity-85' : ''
-                              }`}
-                            >
-                              <div className="flex items-center gap-5 text-left overflow-hidden flex-1 pr-4">
-                                <button
-                                  onClick={() => handleToggleHabit(habit._id)}
-                                  className={`w-6 h-6 rounded-full border flex items-center justify-center shrink-0 transition-colors ${
-                                    habit.completed
-                                      ? 'bg-[#7C5CFF] border-transparent text-white'
-                                      : 'border-[#ECE7FF] bg-[#FAFAFC] hover:border-[#7C5CFF]/45'
-                                  }`}
-                                >
-                                  {habit.completed && <Check className="w-4 h-4 stroke-[3]" />}
-                                </button>
-
-                                <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${habitMeta.color}`}>
-                                  <HabitIcon className="w-5 h-5" />
-                                </div>
-
-                                <div className="overflow-hidden flex-1 pl-1">
-                                  <span className={`text-[16px] font-bold block truncate ${habit.completed ? 'text-gray-400 line-through font-semibold' : 'text-gray-900'}`}>
-                                    {habit.habitName}
-                                  </span>
-                                  <span className="text-[10px] text-[#6B7280] font-semibold block uppercase mt-0.5">
-                                    {habit.category || 'General'} • Streak: {habit.streak}d
-                                  </span>
-                                </div>
-
-                                <div className="hidden sm:block w-36 overflow-hidden pr-2">
-                                  <div className="w-full bg-[#FAFAFC] h-1.5 rounded-full overflow-hidden border border-[#ECE7FF]">
-                                    <div
-                                      className={`h-full rounded-full transition-all duration-300 ${
-                                        habit.completed ? 'bg-emerald-500' : 'bg-[#7C5CFF]'
-                                      }`}
-                                      style={{ width: habit.completed ? '100%' : '65%' }}
-                                    />
-                                  </div>
-                                </div>
-                                <span className="hidden sm:inline text-[10px] font-extrabold text-gray-550 uppercase shrink-0">
-                                  {habit.completed ? 'Completed' : 'Pending'}
-                                </span>
-                              </div>
-
-                              <div className="relative" onClick={(e) => e.stopPropagation()}>
-                                <button
-                                  onClick={() => setActiveHabitMenuId(activeHabitMenuId === habit._id ? null : habit._id)}
-                                  className="p-1 rounded-lg text-gray-400 hover:text-gray-700"
-                                >
-                                  <MoreHorizontal className="w-4.5 h-4.5" />
-                                </button>
-                                
-                                {activeHabitMenuId === habit._id && (
-                                  <div className="absolute right-0 mt-1 w-28 bg-white border border-[#ECE7FF] rounded-xl shadow-lg z-20 p-1 text-left">
-                                    <button
-                                      onClick={() => handleDeleteHabit(habit._id)}
-                                      className="w-full px-3 py-2 text-xxs font-extrabold uppercase text-rose-500 hover:bg-[#FAF8FF] rounded-lg transition-colors flex items-center gap-1.5"
-                                    >
-                                      <Trash2 className="w-3.5 h-3.5" />
-                                      Delete
-                                    </button>
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          );
-                        })}
+                {/* Columns Split - Left Column (Habits) & Right Column (Goals) aligned 50-50 stretch */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch w-full">
+                  
+                  {/* Daily Habits Checklist (Left Column) */}
+                  <motion.div 
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="bg-white rounded-[24px] border border-[#ECE7FF] p-6 shadow-[0_8px_30px_rgba(124,92,255,0.08)] flex flex-col justify-between min-h-[480px]"
+                  >
+                    <div className="flex-1 flex flex-col">
+                      <div className="flex justify-between items-center select-none border-b border-gray-50 pb-3">
+                        <h3 className="text-[20px] font-extrabold text-[#1E1B4B] flex items-center gap-2">
+                          <Check className="w-5.5 h-5.5 text-[#7C5CFF]" /> Daily Habits Checklist
+                        </h3>
+                        <button
+                          onClick={fetchWellnessData}
+                          className="text-[14px] text-[#7C5CFF] hover:underline font-extrabold uppercase tracking-wider animate-pulse"
+                        >
+                          Today's Logs
+                        </button>
                       </div>
-                    ) : (
-                      <div className="flex flex-col items-center justify-center py-16 border border-dashed border-[#ECE7FF] rounded-[24px] text-center text-gray-400 text-[16px] space-y-4 my-2">
-                        <BookOpen className="w-10 h-10 text-[#7C5CFF]/60 mb-1" />
-                        <p className="font-semibold text-gray-500 max-w-sm leading-relaxed pl-1">
-                          No habits logged yet. Click "Add Habit" to track sleep, water, hydration, screen time, or custom habits.
-                        </p>
-                      </div>
-                    )}
-                  </div>
 
-                  <div className="flex justify-center pt-2">
-                    <button
-                      onClick={() => setShowHabitModal(true)}
-                      className="flex items-center gap-1.5 px-6 py-3 rounded-[14px] border border-[#ECE7FF] bg-[#FAFAFC] hover:bg-white text-[#7C5CFF] font-bold text-[14px] transition-all shadow-sm"
-                    >
-                      <Plus className="w-4 h-4" /> Add Habit
-                    </button>
-                  </div>
-                </div>
-
-                {/* Active Goals Board */}
-                <div className="space-y-4 relative">
-                  <div className="flex justify-between items-center">
-                    <h3 className="text-[20px] font-extrabold text-[#1E1B4B] flex items-center gap-2">
-                      <Target className="w-5.5 h-5.5 text-[#7C5CFF]" /> Active Goals
-                    </h3>
-                    <button
-                      onClick={() => setShowGoalModal(true)}
-                      className="text-[14px] text-[#7C5CFF] hover:underline font-extrabold uppercase tracking-wider"
-                    >
-                      View All Goals
-                    </button>
-                  </div>
-
-                  {goals.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                      {goals.map((goal) => {
-                        return (
-                          <div
-                            key={goal._id}
-                            className={`bg-white rounded-[24px] border border-[#ECE7FF] p-6 text-left shadow-[0_8px_30px_rgba(124,92,255,0.08)] flex flex-col justify-between min-h-[180px] relative hover:-translate-y-0.5 transition-all duration-300 ${
-                              goal.completed ? 'opacity-70' : ''
-                            }`}
-                          >
-                            <div>
-                              <div className="flex justify-between items-start gap-2 mb-2">
-                                <span className={`px-2.5 py-0.5 rounded-md text-[10px] font-extrabold uppercase ${
-                                  goal.priority === 'high'
-                                    ? 'bg-rose-50 border border-rose-100 text-rose-500'
-                                    : goal.priority === 'medium'
-                                    ? 'bg-amber-50 border border-amber-100 text-amber-500'
-                                    : 'bg-[#FAFAFC] border border-[#ECE7FF] text-gray-500'
-                                }`}>
-                                  {goal.priority}
-                                </span>
-                                
-                                <div className="flex gap-1.5">
+                      {habits.length > 0 ? (
+                        <div className="divide-y divide-gray-50 flex-1 overflow-y-auto pr-1 my-3 space-y-1">
+                          {habits.map((habit) => {
+                            const habitMeta = getHabitIcon(habit.habitName);
+                            const HabitIcon = habitMeta.Icon;
+                            return (
+                              <div
+                                key={habit._id}
+                                className={`py-4 flex justify-between items-center transition-all hover:bg-slate-50/40 px-2 rounded-2xl group ${
+                                  habit.completed ? 'opacity-85' : ''
+                                }`}
+                              >
+                                <div className="flex items-center gap-4 text-left overflow-hidden flex-1">
                                   <button
-                                    onClick={() => handleToggleGoal(goal._id, goal.completed)}
-                                    className={`w-5.5 h-5.5 rounded border flex items-center justify-center transition-colors ${
-                                      goal.completed
-                                        ? 'bg-[#7C5CFF] border-transparent text-white'
-                                        : 'border-[#ECE7FF] bg-[#FAFAFC]'
+                                    onClick={() => handleToggleHabit(habit._id)}
+                                    className={`w-6 h-6 rounded-full border flex items-center justify-center shrink-0 transition-all ${
+                                      habit.completed
+                                        ? 'bg-[#7C5CFF] border-transparent text-white shadow-md shadow-[#7C5CFF]/20'
+                                        : 'border-[#ECE7FF] bg-[#FAFAFC] hover:border-[#7C5CFF]'
                                     }`}
                                   >
-                                    {goal.completed && <Check className="w-3.5 h-3.5 stroke-[3]" />}
+                                    {habit.completed && <Check className="w-4 h-4 stroke-[3]" />}
                                   </button>
+
+                                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${habitMeta.color}`}>
+                                    <HabitIcon className="w-5 h-5" />
+                                  </div>
+
+                                  <div className="overflow-hidden flex-1">
+                                    <span className={`text-sm font-bold block truncate ${habit.completed ? 'text-gray-400 line-through font-semibold' : 'text-gray-900'}`}>
+                                      {habit.habitName}
+                                    </span>
+                                    <span className="text-[10px] text-[#6B7280] font-semibold block truncate uppercase mt-0.5">
+                                      {habit.category || 'General'}
+                                    </span>
+                                  </div>
+
+                                  {/* Progress bar and text */}
+                                  <div className="hidden sm:flex flex-col items-end gap-1 shrink-0 w-24">
+                                    <div className="w-full bg-[#FAFAFC] h-1.5 rounded-full overflow-hidden border border-[#ECE7FF]">
+                                      <div
+                                        className={`h-full rounded-full transition-all duration-300 ${
+                                          habit.completed ? 'bg-emerald-500' : 'bg-[#7C5CFF]'
+                                        }`}
+                                        style={{ width: habit.completed ? '100%' : '50%' }}
+                                      />
+                                    </div>
+                                    <span className="text-[9px] text-gray-400 font-extrabold uppercase">
+                                      {habit.completed ? `${habit.target || 1} / ${habit.target || 1}` : `0 / ${habit.target || 1}`} entry
+                                    </span>
+                                  </div>
+
+                                  {/* Streak */}
+                                  <div className="flex items-center gap-1 shrink-0 bg-orange-50 px-2 py-0.5 rounded-lg border border-orange-100">
+                                    <Flame className="w-3.5 h-3.5 text-orange-500 fill-orange-500" />
+                                    <span className="text-[9px] text-orange-600 font-black tracking-wider uppercase">{habit.streak}d streak</span>
+                                  </div>
+                                </div>
+
+                                <div className="relative ml-2" onClick={(e) => e.stopPropagation()}>
+                                  <button
+                                    onClick={() => setActiveHabitMenuId(activeHabitMenuId === habit._id ? null : habit._id)}
+                                    className="p-1 rounded-lg text-gray-400 hover:text-gray-700 transition-colors"
+                                  >
+                                    <MoreHorizontal className="w-4.5 h-4.5" />
+                                  </button>
+                                  
+                                  {activeHabitMenuId === habit._id && (
+                                    <div className="absolute right-0 mt-1 w-28 bg-white border border-[#ECE7FF] rounded-xl shadow-lg z-20 p-1 text-left">
+                                      <button
+                                        onClick={() => handleDeleteHabit(habit._id)}
+                                        className="w-full px-3 py-2 text-[10px] font-extrabold uppercase text-rose-500 hover:bg-[#FAF8FF] rounded-lg transition-colors flex items-center gap-1.5"
+                                      >
+                                        <Trash2 className="w-3.5 h-3.5" />
+                                        Delete
+                                      </button>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      ) : (
+                        <div className="flex-1 flex flex-col items-center justify-center py-16 border border-dashed border-[#ECE7FF] rounded-[24px] text-center text-gray-400 text-[16px] space-y-4 my-2">
+                          <BookOpen className="w-10 h-10 text-[#7C5CFF]/60 mb-1" />
+                          <p className="font-semibold text-gray-500 max-w-sm leading-relaxed pl-1">
+                            No habits logged yet. Click "Add Habit" to track sleep, water, hydration, screen time, or custom habits.
+                          </p>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="flex justify-center pt-4 border-t border-gray-50">
+                      <motion.button
+                        type="button"
+                        whileHover={{ scale: 1.03, boxShadow: "0 4px 15px rgba(124,92,255,0.15)" }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => setShowHabitModal(true)}
+                        className="flex items-center justify-center gap-2 px-6 py-3 rounded-full border border-[#7C5CFC] hover:bg-[#7C5CFC]/5 text-[#7C5CFC] font-extrabold text-xs uppercase tracking-wider transition-all min-w-[200px]"
+                      >
+                        ➕ Add New Habit
+                      </motion.button>
+                    </div>
+                  </motion.div>
+
+                  {/* Active Goals Board (Right Column) */}
+                  <motion.div 
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="bg-white rounded-[24px] border border-[#ECE7FF] p-6 shadow-[0_8px_30px_rgba(124,92,255,0.08)] flex flex-col justify-between min-h-[480px]"
+                  >
+                    <div className="flex-1 flex flex-col">
+                      <div className="flex justify-between items-center select-none border-b border-gray-50 pb-3">
+                        <h3 className="text-[20px] font-extrabold text-[#1E1B4B] flex items-center gap-2">
+                          <Target className="w-5.5 h-5.5 text-[#7C5CFF]" /> Active Goals
+                        </h3>
+                        <button
+                          onClick={() => setShowGoalModal(true)}
+                          className="text-[14px] text-[#7C5CFF] hover:underline font-extrabold uppercase tracking-wider"
+                        >
+                          View All Goals
+                        </button>
+                      </div>
+
+                      {goals.length > 0 ? (
+                        <div className="divide-y divide-gray-50 flex-1 overflow-y-auto pr-1 my-3 space-y-1">
+                          {goals.map((goal) => {
+                            const goalMeta = getHabitIcon(goal.category || 'General');
+                            const GoalIcon = goalMeta.Icon;
+                            return (
+                              <div
+                                key={goal._id}
+                                className={`py-4 flex justify-between items-center transition-all hover:bg-slate-50/40 px-2 rounded-2xl group ${
+                                  goal.completed ? 'opacity-80' : ''
+                                }`}
+                              >
+                                <div className="flex items-center gap-4 text-left overflow-hidden flex-1">
+                                  <button
+                                    onClick={() => handleToggleGoal(goal._id, goal.completed)}
+                                    className={`w-6 h-6 rounded-full border flex items-center justify-center shrink-0 transition-all ${
+                                      goal.completed
+                                        ? 'bg-[#7C5CFF] border-transparent text-white shadow-md shadow-[#7C5CFF]/20'
+                                        : 'border-[#ECE7FF] bg-[#FAFAFC] hover:border-[#7C5CFF]'
+                                    }`}
+                                  >
+                                    {goal.completed && <Check className="w-4 h-4 stroke-[3]" />}
+                                  </button>
+
+                                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${goalMeta.color}`}>
+                                    <GoalIcon className="w-5 h-5" />
+                                  </div>
+
+                                  <div className="overflow-hidden flex-1">
+                                    <span className={`text-sm font-bold block truncate ${goal.completed ? 'text-gray-400 line-through font-semibold' : 'text-gray-900'}`}>
+                                      {goal.title}
+                                    </span>
+                                    <span className="text-[10px] text-[#6B7280] font-semibold block truncate uppercase mt-0.5">
+                                      Target: {new Date(goal.targetDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                                    </span>
+                                  </div>
+
+                                  {/* Progress bar & percentage */}
+                                  <div className="flex flex-col items-end gap-1 shrink-0 w-24 pr-2">
+                                    <div className="w-full bg-[#FAFAFC] h-1.5 rounded-full overflow-hidden border border-[#ECE7FF]">
+                                      <div
+                                        className={`h-full rounded-full transition-all duration-300 ${
+                                          goal.completed ? 'bg-emerald-500' : 'bg-[#7C5CFF]'
+                                        }`}
+                                        style={{ width: goal.completed ? '100%' : '0%' }}
+                                      />
+                                    </div>
+                                    <span className="text-[9px] text-gray-400 font-extrabold uppercase">
+                                      {goal.completed ? '100%' : '0%'}
+                                    </span>
+                                  </div>
+                                </div>
+
+                                <div className="flex items-center gap-1 ml-2">
                                   <button
                                     onClick={() => handleDeleteGoal(goal._id)}
-                                    className="p-0.5 text-gray-400 hover:text-rose-500"
+                                    className="p-1.5 rounded-xl text-gray-400 hover:text-rose-500 hover:bg-rose-50 transition-colors shrink-0"
                                     title="Delete Goal"
                                   >
                                     <Trash2 className="w-4 h-4" />
                                   </button>
                                 </div>
                               </div>
-
-                              <span className={`text-[16px] font-extrabold block leading-snug line-clamp-2 ${goal.completed ? 'text-gray-400 line-through font-semibold' : 'text-[#1E1B4B]'}`}>
-                                {goal.title}
-                              </span>
-                              <span className="text-[10px] text-[#6B7280] font-semibold block mt-1 uppercase">
-                                {goal.category} • Target {new Date(goal.targetDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                              </span>
-                            </div>
-
-                            <div className="mt-4">
-                              <div className="flex justify-between items-center text-[10px] text-gray-400 font-extrabold uppercase mb-1">
-                                <span>{goal.completed ? '1/1 Goal' : '0/1 Goal'}</span>
-                                <span>{goal.completed ? '100%' : '0%'}</span>
-                              </div>
-                              <div className="w-full bg-[#FAFAFC] h-1.5 rounded-full overflow-hidden border border-[#ECE7FF]">
-                                <div
-                                  className={`h-full rounded-full transition-all duration-300 ${
-                                    goal.completed ? 'bg-emerald-500' : 'bg-gray-200'
-                                  }`}
-                                  style={{ width: goal.completed ? '100%' : '0%' }}
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      })}
+                            );
+                          })}
+                        </div>
+                      ) : (
+                        <div className="flex-1 flex flex-col items-center justify-center py-16 border border-dashed border-[#ECE7FF] rounded-[24px] text-center text-gray-450 text-[16px] space-y-4 my-2">
+                          <Target className="w-10 h-10 text-[#7C5CFF]/60" />
+                          <p className="font-semibold text-gray-500 max-w-sm leading-relaxed">No goals set yet. Click "Create Goal" to track milestones.</p>
+                        </div>
+                      )}
                     </div>
-                  ) : (
-                    <div className="py-16 border border-dashed border-[#ECE7FF] rounded-[24px] text-center text-gray-450 text-[16px] bg-white shadow-[0_8px_30px_rgba(124,92,255,0.08)] flex flex-col items-center justify-center space-y-4">
-                      <Target className="w-10 h-10 text-[#7C5CFF]/60" />
-                      <p className="font-semibold text-gray-500 max-w-sm leading-relaxed">No goals set yet. Click "Create Goal" to track milestones.</p>
+
+                    <div className="flex justify-center pt-4 border-t border-gray-50">
+                      <motion.button
+                        type="button"
+                        whileHover={{ scale: 1.03, boxShadow: "0 4px 15px rgba(124,92,255,0.15)" }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => setShowGoalModal(true)}
+                        className="flex items-center justify-center gap-2 px-6 py-3 rounded-full border border-[#7C5CFC] hover:bg-[#7C5CFC]/5 text-[#7C5CFC] font-extrabold text-xs uppercase tracking-wider transition-all min-w-[200px]"
+                      >
+                        ➕ Add New Goal
+                      </motion.button>
+                    </div>
+                  </motion.div>
+                </div>
+
+                {/* Achievement Badges Section */}
+                <div id="achievement-badges" className="pt-8 pb-12 w-full space-y-8">
+                  {/* Spacing: 32px top, 12px between title/subtitle, 32px bottom spacing before badges grid */}
+                  <div className="space-y-3 text-left">
+                    <h2 className="text-[24px] font-black text-[#1E1B4B] tracking-tight flex items-center gap-2">
+                      🏅 Achievement Badges
+                    </h2>
+                    <p className="text-[14px] text-[#6B7280] font-semibold leading-relaxed">
+                      Celebrate your progress and unlock badges for your consistency and growth.
+                    </p>
+                  </div>
+
+                  {/* 3D Flip Card Custom Styles */}
+                  <style dangerouslySetInnerHTML={{ __html: `
+                    @keyframes badgePulse {
+                      0%, 100% { transform: scale(1); }
+                      50% { transform: scale(1.03); }
+                    }
+                    @keyframes greenGlow {
+                      0%, 100% { box-shadow: 0 0 15px rgba(16, 185, 129, 0.15), 0 8px 30px rgba(0,0,0,0.015); }
+                      50% { box-shadow: 0 0 25px rgba(16, 185, 129, 0.35), 0 8px 30px rgba(0,0,0,0.02); }
+                    }
+                    @keyframes sparkleAnim {
+                      0%, 100% { opacity: 0.3; transform: scale(0.8) rotate(0deg); }
+                      50% { opacity: 0.9; transform: scale(1.2) rotate(45deg); }
+                    }
+                    .animate-badge-pulse {
+                      animation: badgePulse 2.5s infinite ease-in-out;
+                    }
+                    .animate-green-glow {
+                      animation: greenGlow 2.5s infinite ease-in-out;
+                    }
+                    .animate-sparkle {
+                      animation: sparkleAnim 3.5s infinite ease-in-out;
+                    }
+                    .perspective-1000 {
+                      perspective: 1000px;
+                    }
+                    .card-container {
+                      width: 170px;
+                      height: 210px;
+                      margin: 0 auto;
+                    }
+                    .card-inner {
+                      width: 100%;
+                      height: 100%;
+                      transition: transform 500ms cubic-bezier(0.4, 0, 0.2, 1);
+                      transform-style: preserve-3d;
+                      position: relative;
+                    }
+                    .card-flipped {
+                      transform: rotateY(180deg);
+                    }
+                    .card-front, .card-back {
+                      backface-visibility: hidden;
+                      position: absolute;
+                      top: 0;
+                      left: 0;
+                      width: 100%;
+                      height: 100%;
+                      border-radius: 24px;
+                    }
+                    .card-back {
+                      transform: rotateY(180deg);
+                    }
+                  `}} />
+
+                  {/* Empty state for zero unlocked badges */}
+                  {badges.length > 0 && badges.filter(b => b.isUnlocked).length === 0 && (
+                    <div className="flex flex-col items-center justify-center p-8 bg-white border border-[#EAEAEA] rounded-[24px] shadow-[0_8px_30px_rgba(0,0,0,0.015)] text-center space-y-2.5 w-full my-4">
+                      <span className="text-4xl animate-bounce">🏆</span>
+                      <p className="text-xs text-gray-500 font-extrabold uppercase tracking-wider">Start tracking habits to unlock your first badge.</p>
                     </div>
                   )}
 
-                  {/* Floating Action Circle */}
-                  <button
-                    onClick={() => setShowGoalModal(true)}
-                    className="absolute -right-3.5 -bottom-3.5 w-11 h-11 bg-[#7C5CFF] hover:bg-[#6D4AE5] text-white rounded-full flex items-center justify-center shadow-lg shadow-[#7C5CFF]/20 hover:scale-105 active:scale-95 transition-all z-20"
-                    title="Quick Create Goal"
-                  >
-                    <Plus className="w-5.5 h-5.5" />
-                  </button>
-                </div>
+                  {/* Grid layout */}
+                  <div className="grid gap-6 w-full animate-fadeIn" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(170px, 1fr))' }}>
+                    {badges.map((badge) => {
+                      const BadgeIcon = BADGE_ICONS[badge.icon] || Award;
+                      const isFlipped = flippedBadges.includes(badge.id);
 
-              </div>
+                      return (
+                        <div
+                          key={badge.id}
+                          className="perspective-1000 card-container"
+                          onMouseLeave={() => {
+                            setFlippedBadges(prev => prev.filter(x => x !== badge.id));
+                          }}
+                        >
+                          <div
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setFlippedBadges(prev => 
+                                prev.includes(badge.id)
+                                  ? prev.filter(x => x !== badge.id)
+                                  : [...prev, badge.id]
+                              );
+                            }}
+                            className={`card-inner cursor-pointer hover:shadow-[0_15px_35px_rgba(124,92,255,0.15)] hover:-translate-y-1.5 hover:scale-[1.03] transition-all duration-350 rounded-[24px] border border-[#EAEAEA] hover:border-[#7C5CFF] ${
+                              isFlipped ? 'card-flipped' : ''
+                            } ${badge.isUnlocked ? 'animate-green-glow' : ''}`}
+                          >
+                            {/* FRONT SIDE */}
+                            <div className={`card-front flex flex-col items-center justify-center text-center p-4 bg-white border border-[#EAEAEA] transition-all duration-300 relative ${
+                              badge.isUnlocked
+                                ? 'shadow-[0_8px_30px_rgba(124,92,255,0.06)]'
+                                : 'opacity-70 grayscale'
+                            }`}>
+                              
+                              {/* Sparkles (Unlocked Only - subtle purple) */}
+                              {badge.isUnlocked && (
+                                <>
+                                  <span className="absolute top-3 left-4 text-[#7C5CFF]/30 text-xs font-black select-none animate-sparkle">✦</span>
+                                  <span className="absolute top-4 right-4 text-[#7C5CFF]/30 text-[8px] font-black select-none animate-sparkle">✦</span>
+                                  <span className="absolute bottom-12 left-5 text-[#7C5CFF]/30 text-[9px] font-black select-none animate-sparkle">✦</span>
+                                  <span className="absolute bottom-16 right-5 text-[#7C5CFF]/30 text-xs font-black select-none animate-sparkle">✦</span>
+                                </>
+                              )}
 
-              {/* Right Column (30% = col-span-3 of 12-column grid) */}
-              <div className="lg:col-span-3 space-y-6">
-                
-                {/* Wellness Index circular chart */}
-                <div className="bg-white rounded-[24px] border border-[#ECE7FF] p-6 shadow-[0_8px_30px_rgba(124,92,255,0.08)] text-left flex flex-col justify-between items-center w-full min-h-[140px]">
-                  <div className="flex justify-between items-center w-full">
-                    <div className="text-left flex flex-col justify-center h-full">
-                      <span className="text-[14px] font-bold uppercase tracking-wider text-gray-400 block mb-1">Wellness Index</span>
-                      <span className="text-[28px] font-black text-[#1E1B4B] block leading-none">{habits.length > 0 || goals.length > 0 ? wellnessScore : 0}%</span>
-                      <div className="flex gap-3 mt-2 text-[10px] text-gray-500 font-semibold">
-                        <span>Phy: {habits.length > 0 ? Math.min(100, Math.round(gamification.completionRate)) : 0}%</span>
-                        <span>Men: {gamification.level > 1 || gamification.xp > 0 ? Math.min(100, Math.round(gamification.level * 10)) : 0}%</span>
-                      </div>
-                    </div>
-                    <div className="w-14 h-14 relative flex items-center justify-center shrink-0">
-                      <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
-                        <circle cx="18" cy="18" r="15" fill="none" stroke="#F4F0FF" strokeWidth="2.5" />
-                        <circle
-                          cx="18" cy="18" r="15" fill="none" stroke="#7C5CFF" strokeWidth="2.5"
-                          strokeDasharray="100"
-                          strokeDashoffset={100 - (habits.length > 0 || goals.length > 0 ? wellnessScore : 0)}
-                          strokeLinecap="round"
-                        />
-                      </svg>
-                      <div className="absolute flex items-center justify-center text-[10px] font-black text-[#7C5CFF]">{habits.length > 0 || goals.length > 0 ? wellnessScore : 0}%</div>
-                    </div>
+                              {/* Lock Icon in top-right for locked cards */}
+                              {!badge.isUnlocked && (
+                                <span className="absolute top-3.5 right-3.5 text-slate-350 text-xs select-none">🔒</span>
+                              )}
+
+                              {/* Large Icon Container */}
+                              <div className={`w-16 h-16 rounded-full flex items-center justify-center shadow-sm mb-3.5 shrink-0 transition-transform duration-300 ${
+                                badge.isUnlocked
+                                  ? 'bg-[#7C5CFF]/10 text-[#7C5CFF] scale-105 animate-badge-pulse'
+                                  : 'bg-slate-50 border border-slate-100 text-slate-350'
+                              }`}>
+                                <BadgeIcon className="w-7 h-7" />
+                              </div>
+
+                              <span className={`text-[12px] font-black block truncate w-full text-center tracking-wide ${
+                                badge.isUnlocked ? 'text-[#1E1B4B]' : 'text-slate-400'
+                              }`}>
+                                {badge.name}
+                              </span>
+
+                              {/* Status Badge */}
+                              {badge.isUnlocked ? (
+                                <span className="text-[9px] font-extrabold block mt-2 tracking-widest uppercase text-emerald-500">
+                                  Unlocked
+                                </span>
+                              ) : (
+                                <span className="text-[9px] font-extrabold mt-2 tracking-widest uppercase text-slate-400 flex items-center gap-1">
+                                  Locked
+                                </span>
+                              )}
+                            </div>
+
+                            {/* BACK SIDE */}
+                            <div className="card-back bg-white border border-[#EAEAEA] shadow-[0_8px_30px_rgba(0,0,0,0.015)] p-4 flex flex-col justify-between text-center overflow-hidden">
+                              <div className="space-y-2 w-full">
+                                {/* How to unlock label pill */}
+                                <div className="bg-[#7C5CFF]/10 text-[#7C5CFF] border border-[#ECE7FF]/65 rounded-full px-3.5 py-0.5 flex items-center justify-center gap-1 text-[8.5px] font-black uppercase tracking-wider mx-auto w-max select-none">
+                                  <span>☆</span> How to unlock
+                                </div>
+
+                                {/* Headline criteria */}
+                                <div className="text-[11px] font-black text-[#1E1B4B] w-full text-center leading-normal py-1">
+                                  {badge.headline}
+                                </div>
+
+                                {/* Divider line */}
+                                <div className="w-full border-t border-[#EAEAEA] my-1" />
+
+                                {/* Progress info */}
+                                <div className="text-[10px] font-semibold text-slate-500">
+                                  Progress: <span className="font-black text-[#1E1B4B]">{badge.current} / {badge.target}</span>
+                                </div>
+
+                                {/* Reward info */}
+                                <div className="text-[10px] font-semibold text-slate-500">
+                                  Reward: <span className="font-black text-[#7C5CFF]">{badge.reward}</span>
+                                </div>
+                              </div>
+
+                              {/* Unlock Button */}
+                              <button
+                                type="button"
+                                disabled={!badge.isUnlocked}
+                                className={`w-full py-1.5 rounded-xl text-[9px] font-black uppercase tracking-wider transition-all mt-1 ${
+                                  badge.isUnlocked
+                                    ? 'bg-emerald-500 text-white shadow-md shadow-emerald-500/20 hover:scale-[1.02]'
+                                    : 'bg-slate-100 text-slate-400 cursor-not-allowed opacity-50'
+                                }`}
+                              >
+                                {badge.isUnlocked ? 'Unlocked' : 'Locked'}
+                              </button>
+                            </div>
+
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
-                </div>
-
-                {/* Achievement Badges */}
-                <div className="bg-white rounded-[24px] border border-[#ECE7FF] p-6 shadow-[0_8px_30px_rgba(124,92,255,0.08)] text-left w-full">
-                  <div className="flex justify-between items-center mb-4 pb-1 border-b border-gray-50">
-                    <h4 className="text-[14px] font-extrabold uppercase tracking-widest text-[#1E1B4B] flex items-center gap-1">
-                      <Award className="w-4.5 h-4.5 text-[#7C5CFF]" /> Achievement Badges
-                    </h4>
-                  </div>
-
-                  <div className="grid grid-cols-5 gap-3 justify-items-center">
-                    {/* Badge 1: 7 Day Streak */}
-                    <div
-                      className={`flex flex-col items-center text-center transition-all ${
-                        gamification.longestStreak >= 7 ? 'opacity-100' : 'opacity-35 cursor-not-allowed'
-                      }`}
-                      title={gamification.longestStreak >= 7 ? '7 Day Streak Unlocked!' : 'Locked: Reach a 7-day habits log streak'}
-                    >
-                      <div className="w-10 h-10 rounded-full bg-orange-50 border border-orange-100 flex items-center justify-center text-orange-500 shadow-sm shrink-0">
-                        <Flame className="w-5 h-5 fill-orange-500" />
-                      </div>
-                      <span className="text-[8px] font-bold text-gray-650 block mt-1.5 truncate max-w-full">7d Streak</span>
-                    </div>
-
-                    {/* Badge 2: First Log */}
-                    <div
-                      className={`flex flex-col items-center text-center transition-all ${
-                        (habits.some(h => h.streak > 0) || goals.some(g => g.completed)) ? 'opacity-100' : 'opacity-35 cursor-not-allowed'
-                      }`}
-                      title={(habits.some(h => h.streak > 0) || goals.some(g => g.completed)) ? 'First Log Unlocked!' : 'Locked: Track a habit or complete a goal'}
-                    >
-                      <div className="w-10 h-10 rounded-full bg-violet-50 border border-violet-100 flex items-center justify-center text-violet-500 shadow-sm shrink-0">
-                        <BookOpen className="w-5 h-5" />
-                      </div>
-                      <span className="text-[8px] font-bold text-gray-655 block mt-1.5 truncate max-w-full">First Log</span>
-                    </div>
-
-                    {/* Badge 3: Meditation Master */}
-                    <div
-                      className={`flex flex-col items-center text-center transition-all ${
-                        habits.some(h => h.completed && (h.habitName.toLowerCase().includes('meditation') || h.habitName.toLowerCase().includes('mindful')))
-                          ? 'opacity-100'
-                          : 'opacity-35 cursor-not-allowed'
-                      }`}
-                      title={
-                        habits.some(h => h.completed && (h.habitName.toLowerCase().includes('meditation') || h.habitName.toLowerCase().includes('mindful')))
-                          ? 'Zen Master Unlocked!'
-                          : 'Locked: Complete a mindfulness habit log'
-                      }
-                    >
-                      <div className="w-10 h-10 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-500 shadow-sm shrink-0">
-                        <Compass className="w-5 h-5" />
-                      </div>
-                      <span className="text-[8px] font-bold text-gray-655 block mt-1.5 truncate max-w-full">Zen Master</span>
-                    </div>
-
-                    {/* Badge 4: Hydration Hero */}
-                    <div
-                      className={`flex flex-col items-center text-center transition-all ${
-                        habits.some(h => h.completed && (h.habitName.toLowerCase().includes('hydration') || h.habitName.toLowerCase().includes('water')))
-                          ? 'opacity-100'
-                          : 'opacity-35 cursor-not-allowed'
-                      }`}
-                      title={
-                        habits.some(h => h.completed && (h.habitName.toLowerCase().includes('hydration') || h.habitName.toLowerCase().includes('water')))
-                          ? 'Hydration Hero Unlocked!'
-                          : 'Locked: Complete a water hydration habit log'
-                      }
-                    >
-                      <div className="w-10 h-10 rounded-full bg-sky-50 border border-sky-100 flex items-center justify-center text-sky-500 shadow-sm shrink-0">
-                        <Droplet className="w-5 h-5" />
-                      </div>
-                      <span className="text-[8px] font-bold text-gray-655 block mt-1.5 truncate max-w-full">Hydration</span>
-                    </div>
-
-                    {/* Badge 5: Locked */}
-                    <div className="flex flex-col items-center text-center opacity-35 cursor-not-allowed" title="Early Bird (Locked)">
-                      <div className="w-10 h-10 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center text-gray-400 shadow-sm shrink-0">
-                        <Sparkles className="w-5 h-5" />
-                      </div>
-                      <span className="text-[8px] font-bold text-gray-400 block mt-1.5 truncate max-w-full">Early Bird</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Today's Motivation Card */}
-                <div className="rounded-[24px] border border-[#ECE7FF] p-6 text-left bg-gradient-to-br from-[#7C5CFF]/5 to-[#A78BFA]/10 relative overflow-hidden flex flex-col justify-between min-h-[140px] shadow-[0_8px_30px_rgba(124,92,255,0.08)] w-full">
-                  <div className="relative z-10">
-                    <span className="text-[10px] text-[#7C5CFF] font-black uppercase tracking-wider block mb-1">Today's Motivation</span>
-                    <p className="text-[16px] text-gray-700 font-bold leading-relaxed italic max-w-[210px]">
-                      "The smallest daily habit creates the biggest long-term change."
-                    </p>
-                  </div>
-                  
-                  <div className="absolute right-0 bottom-0 top-0 w-[40%] opacity-20 pointer-events-none -z-10">
-                    <svg viewBox="0 0 100 100" className="w-full h-full text-[#7C5CFF]">
-                      <path d="M70 100 Q40 50 80 10 Q60 50 70 100 Z" fill="currentColor" />
-                      <path d="M50 80 Q25 40 60 20 Q45 50 50 80 Z" fill="currentColor" />
-                    </svg>
-                  </div>
-                </div>
-
-                {/* Weekly progress trend */}
-                <div className="bg-white rounded-[24px] border border-[#ECE7FF] p-6 shadow-[0_8px_30px_rgba(124,92,255,0.08)] text-left w-full">
-                  <div className="flex justify-between items-center mb-4">
-                    <h4 className="text-[14px] font-extrabold uppercase tracking-widest text-[#1E1B4B] flex items-center gap-1">
-                      <TrendingUp className="w-4.5 h-4.5 text-[#7C5CFF]" /> Weekly Progress
-                    </h4>
-                    <select className="bg-gray-50 border border-gray-150 rounded-lg py-1 px-2 text-[8px] font-black uppercase text-gray-500 focus:outline-none cursor-pointer">
-                      <option>This Week</option>
-                    </select>
-                  </div>
-
-                  <div className="h-32 text-gray-350 relative my-3 pr-2 pl-2 flex flex-col justify-center items-center">
-                    {hasActivityData ? (
-                      <svg viewBox="0 0 100 35" className="w-full h-full">
-                        <line x1="0" y1="5" x2="100" y2="5" stroke="#F4F0FF" strokeWidth="0.5" />
-                        <line x1="0" y1="15" x2="100" y2="15" stroke="#F4F0FF" strokeWidth="0.5" />
-                        <line x1="0" y1="25" x2="100" y2="25" stroke="#F4F0FF" strokeWidth="0.5" />
-
-                        <path d={pathD} fill="none" stroke="#7C5CFF" strokeWidth="1.5" strokeLinecap="round" />
-                      </svg>
-                    ) : (
-                      <div className="flex flex-col items-center justify-center text-center">
-                        <TrendingUp className="w-8 h-8 text-gray-300 mb-1" />
-                        <span className="text-xxs text-gray-400 font-bold">No data available yet.</span>
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="flex flex-wrap gap-x-3.5 gap-y-1.5 text-[10px] font-extrabold uppercase text-gray-400 pt-2 border-t border-gray-50">
-                    <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#7C5CFF]" /> Habits Completed</span>
+                  <div className="flex justify-center items-center gap-1.5 text-[11px] text-[#7C5CFF] font-semibold pt-2">
+                    <span className="animate-pulse">👆</span> Click on any badge to flip it!
                   </div>
                 </div>
 
               </div>
-
-            </div>
-          )}
+            )}
 
           {/* Create Goal Modal */}
           {showGoalModal && (
@@ -870,6 +966,39 @@ export default function Wellness() {
                     </button>
                   </div>
                 </form>
+              </div>
+            </div>
+          )}
+
+          {/* Badge Detail / Instruction Modal */}
+          {selectedBadge && (
+            <div className="fixed inset-0 z-50 bg-gray-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+              <div className="w-full max-w-sm p-6 bg-white border border-[#ECE7FF] rounded-[24px] relative shadow-2xl z-10 text-center space-y-4">
+                <div className={`w-16 h-16 rounded-full mx-auto flex items-center justify-center shadow-sm ${
+                  selectedBadge.condition ? 'bg-purple-50 text-[#7C5CFF]' : 'bg-gray-100 text-gray-400'
+                }`}>
+                  <selectedBadge.icon className="w-8 h-8" />
+                </div>
+                <div className="space-y-1">
+                  <h3 className="text-[20px] font-black text-[#1E1B4B]">{selectedBadge.title}</h3>
+                  <span className={`text-[10px] font-black tracking-wider uppercase px-2.5 py-0.5 rounded-full inline-block ${
+                    selectedBadge.condition ? 'bg-emerald-50 text-emerald-600' : 'bg-gray-100 text-gray-500'
+                  }`}>
+                    {selectedBadge.condition ? 'Unlocked' : 'Locked'}
+                  </span>
+                </div>
+                <p className="text-xs text-gray-500 font-semibold leading-relaxed px-2">
+                  {selectedBadge.description}
+                </p>
+                <div className="pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setSelectedBadge(null)}
+                    className="w-full py-2.5 bg-[#7C5CFF] hover:bg-[#6D4AE5] text-white font-extrabold text-xs uppercase tracking-wider rounded-[14px] shadow-sm transition-all"
+                  >
+                    Got It
+                  </button>
+                </div>
               </div>
             </div>
           )}

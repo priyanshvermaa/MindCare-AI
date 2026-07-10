@@ -50,12 +50,15 @@ export const register = async (req, res) => {
     if (user) {
       const userResponse = {
         id: user._id,
+        _id: user._id,
         name: user.name,
         email: user.email,
         role: user.role,
         authMethod: user.authMethod,
         age: user.age,
         onboardingCompleted: user.onboardingCompleted,
+        profilePicture: user.profilePicture || user.avatar || '',
+        avatar: user.avatar || '',
       };
 
       if (!user.onboardingCompleted && (user.age === null || user.age === undefined)) {
@@ -106,12 +109,15 @@ export const login = async (req, res) => {
 
     const userResponse = {
       id: user._id,
+      _id: user._id,
       name: user.name,
       email: user.email,
       role: user.role,
       authMethod: user.authMethod,
       age: user.age,
       onboardingCompleted: user.onboardingCompleted,
+      profilePicture: user.profilePicture || user.avatar || '',
+      avatar: user.avatar || '',
     };
 
     if (!user.onboardingCompleted && (user.age === null || user.age === undefined)) {

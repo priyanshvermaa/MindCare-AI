@@ -65,7 +65,7 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAFAFC] flex flex-col items-center justify-center p-4 md:p-6 lg:p-8 font-poppins text-[#1F2937] relative overflow-hidden select-none">
+    <div className="min-h-screen bg-[#FFFFFF] flex flex-col items-center justify-center p-4 md:p-6 lg:p-8 font-poppins text-[#1F2937] relative overflow-hidden select-none">
       
       {/* Illustrated Nature Background Layer */}
       <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none select-none bg-gradient-to-br from-white via-[#7C5CFF]/3 to-purple-50/50">

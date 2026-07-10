@@ -26,7 +26,7 @@ export default function Checklist({
   })();
 
   const meditated = stats?.meditationMinutes >= 15;
-  const sleptHours = stats?.sleepHours >= 8;
+  const sleptHours = stats?.sleepHours > 0;
 
   const items = [
     { label: 'Log your mood', checked: loggedMood, action: onOpenMood },
