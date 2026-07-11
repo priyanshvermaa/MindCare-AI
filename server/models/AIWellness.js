@@ -117,7 +117,5 @@ const aiWellnessSchema = new mongoose.Schema(
   }
 );
 
-aiWellnessSchema.index({ userId: 1 });
-
 const AIWellness = mongoose.model('AIWellness', aiWellnessSchema);
 export default AIWellness;

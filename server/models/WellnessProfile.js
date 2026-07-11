@@ -42,7 +42,5 @@ const wellnessProfileSchema = new mongoose.Schema(
   }
 );
 
-wellnessProfileSchema.index({ userId: 1 });
-
 const WellnessProfile = mongoose.model('WellnessProfile', wellnessProfileSchema);
 export default WellnessProfile;
