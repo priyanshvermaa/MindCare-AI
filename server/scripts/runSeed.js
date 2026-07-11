@@ -14,7 +14,7 @@ dotenv.config({ path: path.join(__dirname, '../.env') });
 const run = async () => {
   console.log('Starting custom seeder script...');
   await connectDB();
-  await seedInitialData();
+  await seedInitialData(true);
   console.log('Seeder script execution complete. Closing connection...');
   await mongoose.connection.close();
   console.log('Done!');

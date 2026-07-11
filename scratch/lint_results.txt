@@ -1,0 +1,1927 @@
+
+> mindcare-ai@0.0.0 lint
+> oxlint
+
+
+  ! eslint(no-unused-vars): Identifier 'useEffect' is imported but never used.
+   ,-[src/pages/ForgotPassword.jsx:1:27]
+ 1 | import React, { useState, useEffect } from 'react';
+   :                           ^^^^|^^^^
+   :                               `-- 'useEffect' is imported here
+ 2 | import { useSearchParams, useNavigate, Link } from 'react-router-dom';
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Variable 'SYSTEM_PROMPT' is declared but never used. Unused variables should start with a '_'.
+    ,-[server/services/grokService.js:20:7]
+ 19 | 
+ 20 | const SYSTEM_PROMPT = `You are the MindCare AI Wellness Assistant. Your goal is to guide corporate employees and wellness practitioners toward emotional resilience and mental health mindfulness.
+    :       ^^^^^^|^^^^^^
+    :             `-- 'SYSTEM_PROMPT' is declared here
+ 21 | You are supporting the user using cognitive behavioral therapy (CBT) principles, box-breathing guidance, stress/burnout alerts, gratitude prompts, and motivational feedback.
+    `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Function 'generateFallbackChatResponse' is declared but never used.
+     ,-[server/services/grokService.js:204:10]
+ 203 | // Fallback Rule-Based Chat Generator
+ 204 | function generateFallbackChatResponse(message, context) {
+     :          ^^^^^^^^^^^^^^|^^^^^^^^^^^^^
+     :                        `-- 'generateFallbackChatResponse' is declared here
+ 205 |   const lowerMsg = message.toLowerCase();
+     `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Identifier 'useRef' is imported but never used.
+   ,-[src/pages/WaterIntake.jsx:1:38]
+ 1 | import React, { useState, useEffect, useRef } from 'react';
+   :                                      ^^^|^^
+   :                                         `-- 'useRef' is imported here
+ 2 | import { useSearchParams } from 'react-router-dom';
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'useSearchParams' is imported but never used.
+   ,-[src/pages/WaterIntake.jsx:2:10]
+ 1 | import React, { useState, useEffect, useRef } from 'react';
+ 2 | import { useSearchParams } from 'react-router-dom';
+   :          ^^^^^^^|^^^^^^^
+   :                 `-- 'useSearchParams' is imported here
+ 3 | import Sidebar from '../components/dashboard/Sidebar';
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'api' is imported but never used.
+   ,-[src/pages/WaterIntake.jsx:8:8]
+ 7 | import { useWater } from '../context/WaterContext';
+ 8 | import api from '../services/api';
+   :        ^|^
+   :         `-- 'api' is imported here
+ 9 | import { motion, AnimatePresence } from 'framer-motion';
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'Plus' is imported but never used.
+    ,-[src/pages/WaterIntake.jsx:11:12]
+ 10 | import {
+ 11 |   Droplet, Plus, Trash2, Edit2, Target, Sparkles, Award,
+    :            ^^|^
+    :              `-- 'Plus' is imported here
+ 12 |   TrendingUp, Calendar, ChevronDown, ChevronLeft, ChevronRight,
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'Award' is imported but never used.
+    ,-[src/pages/WaterIntake.jsx:11:51]
+ 10 | import {
+ 11 |   Droplet, Plus, Trash2, Edit2, Target, Sparkles, Award,
+    :                                                   ^^|^^
+    :                                                     `-- 'Award' is imported here
+ 12 |   TrendingUp, Calendar, ChevronDown, ChevronLeft, ChevronRight,
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'TrendingUp' is imported but never used.
+    ,-[src/pages/WaterIntake.jsx:12:3]
+ 11 |   Droplet, Plus, Trash2, Edit2, Target, Sparkles, Award,
+ 12 |   TrendingUp, Calendar, ChevronDown, ChevronLeft, ChevronRight,
+    :   ^^^^^|^^^^
+    :        `-- 'TrendingUp' is imported here
+ 13 |   Bell, Check, X, RefreshCw
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'Bell' is imported but never used.
+    ,-[src/pages/WaterIntake.jsx:13:3]
+ 12 |   TrendingUp, Calendar, ChevronDown, ChevronLeft, ChevronRight,
+ 13 |   Bell, Check, X, RefreshCw
+    :   ^^|^
+    :     `-- 'Bell' is imported here
+ 14 | } from 'lucide-react';
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'RefreshCw' is imported but never used.
+    ,-[src/pages/WaterIntake.jsx:13:19]
+ 12 |   TrendingUp, Calendar, ChevronDown, ChevronLeft, ChevronRight,
+ 13 |   Bell, Check, X, RefreshCw
+    :                   ^^^^|^^^^
+    :                       `-- 'RefreshCw' is imported here
+ 14 | } from 'lucide-react';
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Variable 'isLightMode' is declared but never used. Unused variables should start with a '_'.
+     ,-[src/pages/WaterIntake.jsx:117:11]
+ 116 |   const [sidebarOpen, setSidebarOpen] = useState(true);
+ 117 |   const { isLightMode } = useTheme();
+     :           ^^^^^|^^^^^
+     :                `-- 'isLightMode' is declared here
+ 118 |   const { user } = useAuth();
+     `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Variable 'user' is declared but never used. Unused variables should start with a '_'.
+     ,-[src/pages/WaterIntake.jsx:118:11]
+ 117 |   const { isLightMode } = useTheme();
+ 118 |   const { user } = useAuth();
+     :           ^^|^
+     :             `-- 'user' is declared here
+ 119 | 
+     `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Variable 'aiInsights' is declared but never used. Unused variables should start with a '_'.
+     ,-[src/pages/WaterIntake.jsx:130:22]
+ 129 |     waterStats: stats,
+ 130 |     waterAiInsights: aiInsights,
+     :                      ^^^^^|^^^^
+     :                           `-- 'aiInsights' is declared here
+ 131 |     waterLoading: loading,
+     `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Variable 'resetTodayWater' is declared but never used. Unused variables should start with a '_'.
+     ,-[src/pages/WaterIntake.jsx:136:5]
+ 135 |     deleteWater,
+ 136 |     resetTodayWater,
+     :     ^^^^^^^|^^^^^^^
+     :            `-- 'resetTodayWater' is declared here
+ 137 |     setDailyGoal
+     `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Variable 'actionLoading' is declared but never used. Unused variables should start with a '_'.
+     ,-[src/pages/WaterIntake.jsx:141:10]
+ 140 |   // UI States
+ 141 |   const [actionLoading, setActionLoading] = useState(false);
+     :          ^^^^^^|^^^^^^
+     :                `-- 'actionLoading' is declared here
+ 142 |   const [showConfetti, setShowConfetti] = useState(false);
+     `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Identifier 'useRef' is imported but never used.
+   ,-[src/pages/Journal.jsx:1:51]
+ 1 | import React, { useState, useEffect, useCallback, useRef } from 'react';
+   :                                                   ^^^|^^
+   :                                                      `-- 'useRef' is imported here
+ 2 | import { useAuth } from '../context/AuthContext';
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'useTheme' is imported but never used.
+   ,-[src/pages/Journal.jsx:5:10]
+ 4 | import TopNav from '../components/dashboard/TopNav';
+ 5 | import { useTheme } from '../context/ThemeContext';
+   :          ^^^^|^^^
+   :              `-- 'useTheme' is imported here
+ 6 | import { motion, AnimatePresence } from 'framer-motion';
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'Calendar' is imported but never used.
+    ,-[src/pages/Journal.jsx:9:46]
+  8 |   BookOpen, Plus, Search, Heart, Pin, Trash2, Edit3, Eye,
+  9 |   Sparkles, Brain, MessageCircle, Lightbulb, Calendar, Clock, Type, FileText,
+    :                                              ^^^^|^^^
+    :                                                  `-- 'Calendar' is imported here
+ 10 |   ChevronLeft, ChevronRight, X, Save, Loader2, Check,
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'X' is imported but never used.
+    ,-[src/pages/Journal.jsx:10:30]
+  9 |   Sparkles, Brain, MessageCircle, Lightbulb, Calendar, Clock, Type, FileText,
+ 10 |   ChevronLeft, ChevronRight, X, Save, Loader2, Check,
+    :                              |
+    :                              `-- 'X' is imported here
+ 11 |   TrendingUp, BarChart3, Zap, ArrowUpDown, SlidersHorizontal, MoreHorizontal, Award,
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'Check' is imported but never used.
+    ,-[src/pages/Journal.jsx:10:48]
+  9 |   Sparkles, Brain, MessageCircle, Lightbulb, Calendar, Clock, Type, FileText,
+ 10 |   ChevronLeft, ChevronRight, X, Save, Loader2, Check,
+    :                                                ^^|^^
+    :                                                  `-- 'Check' is imported here
+ 11 |   TrendingUp, BarChart3, Zap, ArrowUpDown, SlidersHorizontal, MoreHorizontal, Award,
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'TrendingUp' is imported but never used.
+    ,-[src/pages/Journal.jsx:11:3]
+ 10 |   ChevronLeft, ChevronRight, X, Save, Loader2, Check,
+ 11 |   TrendingUp, BarChart3, Zap, ArrowUpDown, SlidersHorizontal, MoreHorizontal, Award,
+    :   ^^^^^|^^^^
+    :        `-- 'TrendingUp' is imported here
+ 12 |   LayoutGrid, RefreshCw, Feather, HelpCircle, AlertCircle
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'BarChart3' is imported but never used.
+    ,-[src/pages/Journal.jsx:11:15]
+ 10 |   ChevronLeft, ChevronRight, X, Save, Loader2, Check,
+ 11 |   TrendingUp, BarChart3, Zap, ArrowUpDown, SlidersHorizontal, MoreHorizontal, Award,
+    :               ^^^^|^^^^
+    :                   `-- 'BarChart3' is imported here
+ 12 |   LayoutGrid, RefreshCw, Feather, HelpCircle, AlertCircle
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'Zap' is imported but never used.
+    ,-[src/pages/Journal.jsx:11:26]
+ 10 |   ChevronLeft, ChevronRight, X, Save, Loader2, Check,
+ 11 |   TrendingUp, BarChart3, Zap, ArrowUpDown, SlidersHorizontal, MoreHorizontal, Award,
+    :                          ^|^
+    :                           `-- 'Zap' is imported here
+ 12 |   LayoutGrid, RefreshCw, Feather, HelpCircle, AlertCircle
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'ArrowUpDown' is imported but never used.
+    ,-[src/pages/Journal.jsx:11:31]
+ 10 |   ChevronLeft, ChevronRight, X, Save, Loader2, Check,
+ 11 |   TrendingUp, BarChart3, Zap, ArrowUpDown, SlidersHorizontal, MoreHorizontal, Award,
+    :                               ^^^^^|^^^^^
+    :                                    `-- 'ArrowUpDown' is imported here
+ 12 |   LayoutGrid, RefreshCw, Feather, HelpCircle, AlertCircle
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'SlidersHorizontal' is imported but never used.
+    ,-[src/pages/Journal.jsx:11:44]
+ 10 |   ChevronLeft, ChevronRight, X, Save, Loader2, Check,
+ 11 |   TrendingUp, BarChart3, Zap, ArrowUpDown, SlidersHorizontal, MoreHorizontal, Award,
+    :                                            ^^^^^^^^|^^^^^^^^
+    :                                                    `-- 'SlidersHorizontal' is imported here
+ 12 |   LayoutGrid, RefreshCw, Feather, HelpCircle, AlertCircle
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'MoreHorizontal' is imported but never used.
+    ,-[src/pages/Journal.jsx:11:63]
+ 10 |   ChevronLeft, ChevronRight, X, Save, Loader2, Check,
+ 11 |   TrendingUp, BarChart3, Zap, ArrowUpDown, SlidersHorizontal, MoreHorizontal, Award,
+    :                                                               ^^^^^^^|^^^^^^
+    :                                                                      `-- 'MoreHorizontal' is imported here
+ 12 |   LayoutGrid, RefreshCw, Feather, HelpCircle, AlertCircle
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'LayoutGrid' is imported but never used.
+    ,-[src/pages/Journal.jsx:12:3]
+ 11 |   TrendingUp, BarChart3, Zap, ArrowUpDown, SlidersHorizontal, MoreHorizontal, Award,
+ 12 |   LayoutGrid, RefreshCw, Feather, HelpCircle, AlertCircle
+    :   ^^^^^|^^^^
+    :        `-- 'LayoutGrid' is imported here
+ 13 | } from 'lucide-react';
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'RefreshCw' is imported but never used.
+    ,-[src/pages/Journal.jsx:12:15]
+ 11 |   TrendingUp, BarChart3, Zap, ArrowUpDown, SlidersHorizontal, MoreHorizontal, Award,
+ 12 |   LayoutGrid, RefreshCw, Feather, HelpCircle, AlertCircle
+    :               ^^^^|^^^^
+    :                   `-- 'RefreshCw' is imported here
+ 13 | } from 'lucide-react';
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'HelpCircle' is imported but never used.
+    ,-[src/pages/Journal.jsx:12:35]
+ 11 |   TrendingUp, BarChart3, Zap, ArrowUpDown, SlidersHorizontal, MoreHorizontal, Award,
+ 12 |   LayoutGrid, RefreshCw, Feather, HelpCircle, AlertCircle
+    :                                   ^^^^^|^^^^
+    :                                        `-- 'HelpCircle' is imported here
+ 13 | } from 'lucide-react';
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'AlertCircle' is imported but never used.
+    ,-[src/pages/Journal.jsx:12:47]
+ 11 |   TrendingUp, BarChart3, Zap, ArrowUpDown, SlidersHorizontal, MoreHorizontal, Award,
+ 12 |   LayoutGrid, RefreshCw, Feather, HelpCircle, AlertCircle
+    :                                               ^^^^^|^^^^^
+    :                                                    `-- 'AlertCircle' is imported here
+ 13 | } from 'lucide-react';
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Variable 'user' is declared but never used. Unused variables should start with a '_'.
+    ,-[src/pages/Journal.jsx:78:11]
+ 77 | export default function Journal() {
+ 78 |   const { user } = useAuth();
+    :           ^^|^
+    :             `-- 'user' is declared here
+ 79 |   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+    `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Variable 'loadingAnalytics' is declared but never used. Unused variables should start with a '_'.
+    ,-[src/pages/Journal.jsx:85:10]
+ 84 |   const [loading, setLoading] = useState(true);
+ 85 |   const [loadingAnalytics, setLoadingAnalytics] = useState(true);
+    :          ^^^^^^^^|^^^^^^^
+    :                  `-- 'loadingAnalytics' is declared here
+ 86 |   const [errorMsg, setErrorMsg] = useState('');
+    `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Variable 'setSelectedCategory' is declared but never used. Unused variables should start with a '_'.
+    ,-[src/pages/Journal.jsx:92:28]
+ 91 |   const [selectedTab, setSelectedTab] = useState('All Entries'); // 'All Entries', 'Drafts', 'Favorites'
+ 92 |   const [selectedCategory, setSelectedCategory] = useState('');
+    :                            ^^^^^^^^^|^^^^^^^^^
+    :                                     `-- 'setSelectedCategory' is declared here
+ 93 |   const [selectedSort, setSelectedSort] = useState('newest');
+    `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Variable 'selectedCalendarDate' is declared but never used. Unused variables should start with a '_'.
+    ,-[src/pages/Journal.jsx:96:10]
+ 95 |   // Date filter from calendar widget click
+ 96 |   const [selectedCalendarDate, setSelectedCalendarDate] = useState(null);
+    :          ^^^^^^^^^^|^^^^^^^^^
+    :                    `-- 'selectedCalendarDate' is declared here
+ 97 | 
+    `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Variable 'setSelectedCalendarDate' is declared but never used. Unused variables should start with a '_'.
+    ,-[src/pages/Journal.jsx:96:32]
+ 95 |   // Date filter from calendar widget click
+ 96 |   const [selectedCalendarDate, setSelectedCalendarDate] = useState(null);
+    :                                ^^^^^^^^^^^|^^^^^^^^^^^
+    :                                           `-- 'setSelectedCalendarDate' is declared here
+ 97 | 
+    `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Variable 'activeMenuId' is declared but never used. Unused variables should start with a '_'.
+     ,-[src/pages/Journal.jsx:120:10]
+ 119 |   const [saving, setSaving] = useState(false);
+ 120 |   const [activeMenuId, setActiveMenuId] = useState(null);
+     :          ^^^^^^|^^^^^
+     :                `-- 'activeMenuId' is declared here
+ 121 | 
+     `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Variable 'setActiveMenuId' is declared but never used. Unused variables should start with a '_'.
+     ,-[src/pages/Journal.jsx:120:24]
+ 119 |   const [saving, setSaving] = useState(false);
+ 120 |   const [activeMenuId, setActiveMenuId] = useState(null);
+     :                        ^^^^^^^|^^^^^^^
+     :                               `-- 'setActiveMenuId' is declared here
+ 121 | 
+     `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Variable 'handlePromptClick' is declared but never used. Unused variables should start with a '_'.
+     ,-[src/pages/Journal.jsx:275:9]
+ 274 |   // Prompts triggers creation helper
+ 275 |   const handlePromptClick = (promptText) => {
+     :         ^^^^^^^^|^^^^^^^^
+     :                 `-- 'handlePromptClick' is declared here
+ 276 |     setTitle(promptText);
+     `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Variable 'dateStr' is declared but never used. Unused variables should start with a '_'.
+     ,-[src/pages/Journal.jsx:348:11]
+ 347 |     if (!day) return null;
+ 348 |     const dateStr = `${calendarMonth.getFullYear()}-${String(calendarMonth.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+     :           ^^^|^^^
+     :              `-- 'dateStr' is declared here
+ 349 |     
+     `----
+  help: Consider removing this declaration.
+
+  ! react-hooks(exhaustive-deps): React Hook useEffect has a missing dependency: 'fetchEntries'
+     ,-[src/pages/Journal.jsx:190:6]
+ 188 |   useEffect(() => {
+ 189 |     fetchEntries(false);
+     :     ^^^^^^|^^^^^
+     :           `-- useEffect uses `fetchEntries` here
+ 190 |   }, [selectedTab, selectedCategory, selectedSort]);
+     :      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ 191 | 
+     `----
+  help: Either include it or remove the dependency array.
+
+  ! react-hooks(exhaustive-deps): React Hook useEffect has a missing dependency: 'fetchEntries'
+     ,-[src/pages/Journal.jsx:198:6]
+ 194 |     const handler = setTimeout(() => {
+ 195 |       fetchEntries(false);
+     :       ^^^^^^|^^^^^
+     :             `-- useEffect uses `fetchEntries` here
+ 196 |     }, 450);
+ 197 |     return () => clearTimeout(handler);
+ 198 |   }, [searchTerm]);
+     :      ^^^^^^^^^^^^
+ 199 | 
+     `----
+  help: Either include it or remove the dependency array.
+
+  ! eslint(no-unused-vars): Identifier 'AlertTriangle' is imported but never used.
+    ,-[src/pages/EmergencyHelp.jsx:9:3]
+  8 | import { 
+  9 |   AlertTriangle, Phone, MessageSquare, ShieldAlert, Heart, 
+    :   ^^^^^^|^^^^^^
+    :         `-- 'AlertTriangle' is imported here
+ 10 |   CheckCircle, Play, ChevronRight, Activity, Wind, Eye, X 
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'Play' is imported but never used.
+    ,-[src/pages/EmergencyHelp.jsx:10:16]
+  9 |   AlertTriangle, Phone, MessageSquare, ShieldAlert, Heart, 
+ 10 |   CheckCircle, Play, ChevronRight, Activity, Wind, Eye, X 
+    :                ^^|^
+    :                  `-- 'Play' is imported here
+ 11 | } from 'lucide-react';
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Catch parameter 'e' is caught but never used.
+    ,-[server/server.js:95:16]
+ 94 |         allowedOrigins.push(urlObj.origin);
+ 95 |       } catch (e) {}
+    :                |
+    :                `-- 'e' is declared here
+ 96 |     }
+    `----
+  help: Consider handling this error.
+
+  ! eslint(no-unused-vars): Parameter 'next' is declared but never used. Unused parameters should start with a '_'.
+     ,-[server/server.js:219:25]
+ 218 | // Global Error Handler
+ 219 | app.use((err, req, res, next) => {
+     :                         ^^|^
+     :                           `-- 'next' is declared here
+ 220 |   console.error('Unhandled Server Error: ', err.stack);
+     `----
+  help: Consider removing this parameter.
+
+  ! eslint(no-unused-vars): Identifier 'Sun' is imported but never used.
+   ,-[src/components/dashboard/TopNav.jsx:2:16]
+ 1 | import React, { useState, useEffect, useRef } from 'react';
+ 2 | import { Bell, Sun, Moon, User, LogOut, Heart, HelpCircle, ChevronRight, Menu } from 'lucide-react';
+   :                ^|^
+   :                 `-- 'Sun' is imported here
+ 3 | import { useAuth } from '../../context/AuthContext';
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'Moon' is imported but never used.
+   ,-[src/components/dashboard/TopNav.jsx:2:21]
+ 1 | import React, { useState, useEffect, useRef } from 'react';
+ 2 | import { Bell, Sun, Moon, User, LogOut, Heart, HelpCircle, ChevronRight, Menu } from 'lucide-react';
+   :                     ^^|^
+   :                       `-- 'Moon' is imported here
+ 3 | import { useAuth } from '../../context/AuthContext';
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'HelpCircle' is imported but never used.
+   ,-[src/components/dashboard/TopNav.jsx:2:48]
+ 1 | import React, { useState, useEffect, useRef } from 'react';
+ 2 | import { Bell, Sun, Moon, User, LogOut, Heart, HelpCircle, ChevronRight, Menu } from 'lucide-react';
+   :                                                ^^^^^|^^^^
+   :                                                     `-- 'HelpCircle' is imported here
+ 3 | import { useAuth } from '../../context/AuthContext';
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Parameter 'isDashboard' is declared but never used. Unused parameters should start with a '_'.
+    ,-[src/components/dashboard/TopNav.jsx:10:48]
+  9 | 
+ 10 | export default function TopNav({ onMenuToggle, isDashboard = false }) {
+    :                                                ^^^^^|^^^^^
+    :                                                     `-- 'isDashboard' is declared here
+ 11 |   const { user, logout } = useAuth();
+    `----
+  help: Consider removing this parameter.
+
+  ! eslint(no-unused-vars): Variable 'isLightMode' is declared but never used. Unused variables should start with a '_'.
+    ,-[src/components/dashboard/TopNav.jsx:12:11]
+ 11 |   const { user, logout } = useAuth();
+ 12 |   const { isLightMode, toggleTheme } = useTheme();
+    :           ^^^^^|^^^^^
+    :                `-- 'isLightMode' is declared here
+ 13 |   const navigate = useNavigate();
+    `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Variable 'handleToggleTheme' is declared but never used. Unused variables should start with a '_'.
+    ,-[src/components/dashboard/TopNav.jsx:54:9]
+ 53 | 
+ 54 |   const handleToggleTheme = () => {
+    :         ^^^^^^^^|^^^^^^^^
+    :                 `-- 'handleToggleTheme' is declared here
+ 55 |     toggleTheme();
+    `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Variable 'goals' is declared but never used. Unused variables should start with a '_'.
+    ,-[src/pages/Dashboard.jsx:59:10]
+ 58 |   const [charts, setCharts] = useState(null);
+ 59 |   const [goals, setGoals] = useState([]);
+    :          ^^|^^
+    :            `-- 'goals' is declared here
+ 60 |   const [featuredMeditation, setFeaturedMeditation] = useState(null);
+    `----
+  help: Consider removing this declaration.
+
+  ! react-hooks(exhaustive-deps): React Hook useCallback has a missing dependency: 'fetchWaterTelemetry'
+     ,-[src/pages/Dashboard.jsx:144:6]
+  77 |         api.get('/dashboard/ai-wellness'),
+  78 |         fetchWaterTelemetry(new Date(), false)
+     :         ^^^^^^^^^|^^^^^^^^^
+     :                  `-- useCallback uses `fetchWaterTelemetry` here
+  79 |       ]);
+  80 | 
+  81 |       const statsRes = results[0].status === 'fulfilled' ? results[0].value : null;
+  82 |       const chartsRes = results[1].status === 'fulfilled' ? results[1].value : null;
+  83 |       const aiRes = results[2].status === 'fulfilled' ? results[2].value : null;
+  84 | 
+  85 |       if (statsRes) {
+  86 |         setStats(statsRes.data.stats);
+  87 |       } else {
+  88 |         console.warn('Failed to fetch dashboard statistics:', results[0].reason?.message);
+  89 |       }
+  90 | 
+  91 |       if (chartsRes) {
+  92 |         setCharts(chartsRes.data.charts);
+  93 |       } else {
+  94 |         console.warn('Failed to fetch dashboard charts:', results[1].reason?.message);
+  95 |       }
+  96 | 
+  97 |       if (aiRes) {
+  98 |         setAiAnalysis(aiRes.data.hasInsights === false ? { hasInsights: false } : aiRes.data.wellnessAnalysis);
+  99 |       } else {
+ 100 |         console.warn('Failed to fetch AI wellness insights:', results[2].reason?.message);
+ 101 |         setAiAnalysis({ error: 'Unable to load AI insights right now. Please try again later.' });
+ 102 |       }
+ 103 | 
+ 104 |       if (results[0].status === 'rejected') {
+ 105 |         setError('Unable to load wellness dashboard stats right now. Please try again later.');
+ 106 |       }
+ 107 | 
+ 108 |       // Fetch Goals and Habits metadata
+ 109 |       try {
+ 110 |         const goalsRes = await api.get('/goals');
+ 111 |         setGoals(goalsRes.data.goals || []);
+ 112 |       } catch (wellErr) {
+ 113 |         console.warn('Could not load wellness/goals metadata:', wellErr.message);
+ 114 |       }
+ 115 | 
+ 116 |       // Fetch Featured Meditation
+ 117 |       try {
+ 118 |         const featuredRes = await api.get('/meditations/featured');
+ 119 |         if (featuredRes.data.success) {
+ 120 |           setFeaturedMeditation(featuredRes.data.meditation);
+ 121 |         }
+ 122 |       } catch (featErr) {
+ 123 |         console.warn('Could not load featured meditation:', featErr.message);
+ 124 |       }
+ 125 | 
+ 126 |       // Fetch Latest Journal entry for checklist checked logic
+ 127 |       try {
+ 128 |         const journalsRes = await api.get('/journals');
+ 129 |         if (journalsRes.data && journalsRes.data.journals && journalsRes.data.journals.length > 0) {
+ 130 |           setLatestJournal(journalsRes.data.journals[0]);
+ 131 |         } else if (journalsRes.data && journalsRes.data.entries && journalsRes.data.entries.length > 0) {
+ 132 |           setLatestJournal(journalsRes.data.entries[0]);
+ 133 |         }
+ 134 |       } catch (journErr) {
+ 135 |         console.warn('Could not load journals for checklist:', journErr.message);
+ 136 |       }
+ 137 | 
+ 138 |     } catch (err) {
+ 139 |       console.error('Failed to load dashboard statistics:', err);
+ 140 |       setError('Unable to load wellness dashboard stats right now. Please try again later.');
+ 141 |     } finally {
+ 142 |       setLoading(false);
+ 143 |     }
+ 144 |   }, []);
+     :      ^^
+ 145 | 
+     `----
+  help: Either include it or remove the dependency array.
+
+  ! eslint(no-unused-vars): Catch parameter 'e' is caught but never used.
+    ,-[server/services/analyticsService.js:27:16]
+ 26 |         return w.date.toISOString().split('T')[0];
+ 27 |       } catch (e) {
+    :                |
+    :                `-- 'e' is declared here
+ 28 |         return null;
+    `----
+  help: Consider handling this error.
+
+  ! eslint(no-unused-vars): Variable 'userObjectId' is declared but never used. Unused variables should start with a '_'.
+     ,-[server/services/analyticsService.js:296:9]
+ 295 | export const compileSummaryReport = async (userId, range) => {
+ 296 |   const userObjectId = new mongoose.Types.ObjectId(userId);
+     :         ^^^^^^|^^^^^
+     :               `-- 'userObjectId' is declared here
+ 297 |   const now = new Date();
+     `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Identifier 'motion' is imported but never used.
+   ,-[src/components/ui/Card.jsx:2:10]
+ 1 | import React from 'react';
+ 2 | import { motion } from 'framer-motion';
+   :          ^^^|^^
+   :             `-- 'motion' is imported here
+ 3 | 
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'Heart' is imported but never used.
+    ,-[src/pages/Settings.jsx:9:58]
+  8 |   User, Lock, Bell, Shield, Check, Save,
+  9 |   Trash2, LogOut, AlertCircle, Settings as SettingsIcon, Heart, ArrowRight
+    :                                                          ^^|^^
+    :                                                            `-- 'Heart' is imported here
+ 10 | } from 'lucide-react';
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'ArrowRight' is imported but never used.
+    ,-[src/pages/Settings.jsx:9:65]
+  8 |   User, Lock, Bell, Shield, Check, Save,
+  9 |   Trash2, LogOut, AlertCircle, Settings as SettingsIcon, Heart, ArrowRight
+    :                                                                 ^^^^^|^^^^
+    :                                                                      `-- 'ArrowRight' is imported here
+ 10 | } from 'lucide-react';
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Variable 'user' is declared but never used. Unused variables should start with a '_'.
+    ,-[src/pages/Settings.jsx:65:11]
+ 64 | export default function Settings() {
+ 65 |   const { user, setUser, logout, updateUserProfile, refreshUserProfile } = useAuth();
+    :           ^^|^
+    :             `-- 'user' is declared here
+ 66 |   const [sidebarOpen, setSidebarOpen] = useState(true);
+    `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Variable 'refreshUserProfile' is declared but never used. Unused variables should start with a '_'.
+    ,-[src/pages/Settings.jsx:65:53]
+ 64 | export default function Settings() {
+ 65 |   const { user, setUser, logout, updateUserProfile, refreshUserProfile } = useAuth();
+    :                                                     ^^^^^^^^^|^^^^^^^^
+    :                                                              `-- 'refreshUserProfile' is declared here
+ 66 |   const [sidebarOpen, setSidebarOpen] = useState(true);
+    `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Variable 'isLightMode' is declared but never used. Unused variables should start with a '_'.
+    ,-[src/pages/Settings.jsx:67:11]
+ 66 |   const [sidebarOpen, setSidebarOpen] = useState(true);
+ 67 |   const { isLightMode } = useTheme();
+    :           ^^^^^|^^^^^
+    :                `-- 'isLightMode' is declared here
+ 68 |   const [selectedFile, setSelectedFile] = useState(null);
+    `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Identifier 'Mood' is imported but never used.
+   ,-[server/controllers/aiController.js:2:8]
+ 1 | import Conversation from '../models/Conversation.js';
+ 2 | import Mood from '../models/Mood.js';
+   :        ^^|^
+   :          `-- 'Mood' is imported here
+ 3 | import JournalEntry from '../models/JournalEntry.js';
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'JournalEntry' is imported but never used.
+   ,-[server/controllers/aiController.js:3:8]
+ 2 | import Mood from '../models/Mood.js';
+ 3 | import JournalEntry from '../models/JournalEntry.js';
+   :        ^^^^^^|^^^^^
+   :              `-- 'JournalEntry' is imported here
+ 4 | import Goal from '../models/Goal.js';
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'Goal' is imported but never used.
+   ,-[server/controllers/aiController.js:4:8]
+ 3 | import JournalEntry from '../models/JournalEntry.js';
+ 4 | import Goal from '../models/Goal.js';
+   :        ^^|^
+   :          `-- 'Goal' is imported here
+ 5 | import Habit from '../models/Habit.js';
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'Habit' is imported but never used.
+   ,-[server/controllers/aiController.js:5:8]
+ 4 | import Goal from '../models/Goal.js';
+ 5 | import Habit from '../models/Habit.js';
+   :        ^^|^^
+   :          `-- 'Habit' is imported here
+ 6 | import DailyWaterSummary from '../models/DailyWaterSummary.js';
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'DailyWaterSummary' is imported but never used.
+   ,-[server/controllers/aiController.js:6:8]
+ 5 | import Habit from '../models/Habit.js';
+ 6 | import DailyWaterSummary from '../models/DailyWaterSummary.js';
+   :        ^^^^^^^^|^^^^^^^^
+   :                `-- 'DailyWaterSummary' is imported here
+ 7 | import { getComprehensiveAnalytics } from '../services/analyticsService.js';
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'getComprehensiveAnalytics' is imported but never used.
+   ,-[server/controllers/aiController.js:7:10]
+ 6 | import DailyWaterSummary from '../models/DailyWaterSummary.js';
+ 7 | import { getComprehensiveAnalytics } from '../services/analyticsService.js';
+   :          ^^^^^^^^^^^^|^^^^^^^^^^^^
+   :                      `-- 'getComprehensiveAnalytics' is imported here
+ 8 | import { analyzeUserHealthContext } from '../services/grokService.js';
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'analyzeUserHealthContext' is imported but never used.
+   ,-[server/controllers/aiController.js:8:10]
+ 7 | import { getComprehensiveAnalytics } from '../services/analyticsService.js';
+ 8 | import { analyzeUserHealthContext } from '../services/grokService.js';
+   :          ^^^^^^^^^^^^|^^^^^^^^^^^
+   :                      `-- 'analyzeUserHealthContext' is imported here
+ 9 | import { generateOrchestratedAIResponse, compileFullUserTelemetry, formatUserTelemetryText } from '../services/aiService.js';
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Variable 'getFormattedLocalDate' is declared but never used. Unused variables should start with a '_'.
+    ,-[server/controllers/aiController.js:12:7]
+ 11 | // Local date formatting helper
+ 12 | const getFormattedLocalDate = (d = new Date()) => {
+    :       ^^^^^^^^^^|^^^^^^^^^^
+    :                 `-- 'getFormattedLocalDate' is declared here
+ 13 |   const date = new Date(d);
+    `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-useless-escape): Unnecessary escape character '.'
+    ,-[server/models/User.js:18:16]
+ 17 |       match: [
+ 18 |         /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+    :                ^^
+ 19 |         'Please provide a valid email address',
+    `----
+  help: Replace `\.` with `.`.
+
+  ! eslint(no-useless-escape): Unnecessary escape character '.'
+    ,-[server/models/User.js:18:32]
+ 17 |       match: [
+ 18 |         /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+    :                                ^^
+ 19 |         'Please provide a valid email address',
+    `----
+  help: Replace `\.` with `.`.
+
+  ! eslint(no-unused-vars): Variable 'seededResources' is declared but never used. Unused variables should start with a '_'.
+    ,-[server/utils/seeder.js:67:13]
+ 66 |       
+ 67 |       const seededResources = await Resource.create([
+    :             ^^^^^^^|^^^^^^^
+    :                    `-- 'seededResources' is declared here
+ 68 |         {
+    `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Variable 'categories' is declared but never used. Unused variables should start with a '_'.
+     ,-[server/utils/seeder.js:403:11]
+ 402 |     await MeditationCategory.deleteMany({});
+ 403 |     const categories = await MeditationCategory.create([
+     :           ^^^^^|^^^^
+     :                `-- 'categories' is declared here
+ 404 |       { name: 'Stress Relief', slug: 'stress-relief', description: 'Calm your nervous system and find emotional stability through guided breathing and deep mindfulness patterns.', icon: 'Smile', count: '12 Sessions' },
+     `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Parameter 'name' is declared but never used. Unused parameters should start with a '_'.
+    ,-[src/pages/Dashboard/MoodChart.jsx:51:36]
+ 50 |                 itemStyle={{ color: '#FFFFFF' }}
+ 51 |                 formatter={(value, name, props) => [`${value}/10`, 'Mood']}
+    :                                    ^^|^
+    :                                      `-- 'name' is declared here
+ 52 |               />
+    `----
+  help: Consider removing this parameter.
+
+  ! eslint(no-unused-vars): Parameter 'props' is declared but never used. Unused parameters should start with a '_'.
+    ,-[src/pages/Dashboard/MoodChart.jsx:51:42]
+ 50 |                 itemStyle={{ color: '#FFFFFF' }}
+ 51 |                 formatter={(value, name, props) => [`${value}/10`, 'Mood']}
+    :                                          ^^|^^
+    :                                            `-- 'props' is declared here
+ 52 |               />
+    `----
+  help: Consider removing this parameter.
+
+  ! eslint(no-unused-vars): Identifier 'bcrypt' is imported but never used.
+   ,-[server/controllers/settingsController.js:3:8]
+ 2 | import User from '../models/User.js';
+ 3 | import bcrypt from 'bcryptjs';
+   :        ^^^|^^
+   :           `-- 'bcrypt' is imported here
+ 4 | import { generateToken } from './authController.js';
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'generateToken' is imported but never used.
+   ,-[server/controllers/settingsController.js:4:10]
+ 3 | import bcrypt from 'bcryptjs';
+ 4 | import { generateToken } from './authController.js';
+   :          ^^^^^^|^^^^^^
+   :                `-- 'generateToken' is imported here
+ 5 | import { getRecommendedSleepRange, clearAICache, generateWellnessAnalysis, recalculateUserWellnessScores } from '../services/aiService.js';
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'Info' is imported but never used.
+    ,-[src/pages/SelfCareLibrary.jsx:9:59]
+  8 |   Search, Library, FileText, Video, BookOpen, Clock, 
+  9 |   ArrowRight, Heart, Share2, X, Play, Award, CheckCircle, Info 
+    :                                                           ^^|^
+    :                                                             `-- 'Info' is imported here
+ 10 | } from 'lucide-react';
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Variable 'user' is declared but never used. Unused variables should start with a '_'.
+    ,-[src/pages/SelfCareLibrary.jsx:14:11]
+ 13 | export default function SelfCareLibrary() {
+ 14 |   const { user } = useAuth();
+    :           ^^|^
+    :             `-- 'user' is declared here
+ 15 |   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+    `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Variable 'isLightMode' is declared but never used. Unused variables should start with a '_'.
+    ,-[src/pages/SelfCareLibrary.jsx:16:11]
+ 15 |   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+ 16 |   const { isLightMode } = useTheme();
+    :           ^^^^^|^^^^^
+    :                `-- 'isLightMode' is declared here
+ 17 |   
+    `----
+  help: Consider removing this declaration.
+
+  ! react-hooks(exhaustive-deps): React Hook useEffect has a missing dependency: 'fetchResources'
+    ,-[src/pages/SelfCareLibrary.jsx:60:6]
+ 58 |   useEffect(() => {
+ 59 |     fetchResources();
+    :     ^^^^^^^|^^^^^^
+    :            `-- useEffect uses `fetchResources` here
+ 60 |   }, [activeType]);
+    :      ^^^^^^^^^^^^
+ 61 | 
+    `----
+  help: Either include it or remove the dependency array.
+
+  ! eslint(no-unused-vars): Identifier 'DailyWaterSummary' is imported but never used.
+   ,-[server/controllers/adminController.js:4:8]
+ 3 | import JournalEntry from '../models/JournalEntry.js';
+ 4 | import DailyWaterSummary from '../models/DailyWaterSummary.js';
+   :        ^^^^^^^^|^^^^^^^^
+   :                `-- 'DailyWaterSummary' is imported here
+ 5 | import WaterLog from '../models/WaterLog.js';
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'UserMeditation' is imported but never used.
+   ,-[server/controllers/adminController.js:7:8]
+ 6 | import MeditationHistory from '../models/MeditationHistory.js';
+ 7 | import UserMeditation from '../models/UserMeditation.js';
+   :        ^^^^^^^|^^^^^^
+   :               `-- 'UserMeditation' is imported here
+ 8 | import Habit from '../models/Habit.js';
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'WellnessStats' is imported but never used.
+    ,-[server/controllers/adminController.js:10:8]
+  9 | import Goal from '../models/Goal.js';
+ 10 | import WellnessStats from '../models/WellnessStats.js';
+    :        ^^^^^^|^^^^^^
+    :              `-- 'WellnessStats' is imported here
+ 11 | import AIWellness from '../models/AIWellness.js';
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'Bookmark' is imported but never used.
+    ,-[server/controllers/adminController.js:12:8]
+ 11 | import AIWellness from '../models/AIWellness.js';
+ 12 | import Bookmark from '../models/Bookmark.js';
+    :        ^^^^|^^^
+    :            `-- 'Bookmark' is imported here
+ 13 | import ResourceProgress from '../models/ResourceProgress.js';
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'ResourceProgress' is imported but never used.
+    ,-[server/controllers/adminController.js:13:8]
+ 12 | import Bookmark from '../models/Bookmark.js';
+ 13 | import ResourceProgress from '../models/ResourceProgress.js';
+    :        ^^^^^^^^|^^^^^^^
+    :                `-- 'ResourceProgress' is imported here
+ 14 | import Conversation from '../models/Conversation.js';
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'Conversation' is imported but never used.
+    ,-[server/controllers/adminController.js:14:8]
+ 13 | import ResourceProgress from '../models/ResourceProgress.js';
+ 14 | import Conversation from '../models/Conversation.js';
+    :        ^^^^^^|^^^^^
+    :              `-- 'Conversation' is imported here
+ 15 | import SystemLog from '../models/SystemLog.js';
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'Report' is imported but never used.
+    ,-[server/controllers/adminController.js:16:8]
+ 15 | import SystemLog from '../models/SystemLog.js';
+ 16 | import Report from '../models/Report.js';
+    :        ^^^|^^
+    :           `-- 'Report' is imported here
+ 17 | import Resource from '../models/Resource.js';
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'Resource' is imported but never used.
+    ,-[server/controllers/adminController.js:17:8]
+ 16 | import Report from '../models/Report.js';
+ 17 | import Resource from '../models/Resource.js';
+    :        ^^^^|^^^
+    :            `-- 'Resource' is imported here
+ 18 | import AdminSettings from '../models/AdminSettings.js';
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Variable 'callOpenRouter' is declared but never used. Unused variables should start with a '_'.
+     ,-[server/services/aiService.js:260:7]
+ 259 |  */
+ 260 | const callOpenRouter = async (systemPrompt, history, currentMessage) => {
+     :       ^^^^^^^|^^^^^^
+     :              `-- 'callOpenRouter' is declared here
+ 261 |   const apiKey = process.env.OPENROUTER_API_KEY;
+     `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Identifier 'Smile' is imported but never used.
+   ,-[src/pages/MoodTracker.jsx:8:3]
+ 7 | import { 
+ 8 |   Smile, Briefcase, Heart, Users, BookOpen, Activity, MoreHorizontal, 
+   :   ^^|^^
+   :     `-- 'Smile' is imported here
+ 9 |   Trash2, Edit2, Calendar, HelpCircle, ArrowRight, Sparkles, Flower2, BarChart2 
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'ArrowRight' is imported but never used.
+    ,-[src/pages/MoodTracker.jsx:9:40]
+  8 |   Smile, Briefcase, Heart, Users, BookOpen, Activity, MoreHorizontal, 
+  9 |   Trash2, Edit2, Calendar, HelpCircle, ArrowRight, Sparkles, Flower2, BarChart2 
+    :                                        ^^^^^|^^^^
+    :                                             `-- 'ArrowRight' is imported here
+ 10 | } from 'lucide-react';
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'Sparkles' is imported but never used.
+    ,-[src/pages/MoodTracker.jsx:9:52]
+  8 |   Smile, Briefcase, Heart, Users, BookOpen, Activity, MoreHorizontal, 
+  9 |   Trash2, Edit2, Calendar, HelpCircle, ArrowRight, Sparkles, Flower2, BarChart2 
+    :                                                    ^^^^|^^^
+    :                                                        `-- 'Sparkles' is imported here
+ 10 | } from 'lucide-react';
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Parameter 'onOpenWellness' is declared but never used. Unused parameters should start with a '_'.
+    ,-[src/pages/Dashboard/Checklist.jsx:10:3]
+  9 |   onOpenJournal, 
+ 10 |   onOpenWellness,
+    :   ^^^^^^^|^^^^^^
+    :          `-- 'onOpenWellness' is declared here
+ 11 |   onOpenWater,
+    `----
+  help: Consider removing this parameter.
+
+  ! eslint(no-unused-vars): Parameter 'onOpenWater' is declared but never used. Unused parameters should start with a '_'.
+    ,-[src/pages/Dashboard/Checklist.jsx:11:3]
+ 10 |   onOpenWellness,
+ 11 |   onOpenWater,
+    :   ^^^^^|^^^^^
+    :        `-- 'onOpenWater' is declared here
+ 12 |   onOpenSleep,
+    `----
+  help: Consider removing this parameter.
+
+  ! eslint(no-unused-vars): Variable 'drankWater' is declared but never used. Unused variables should start with a '_'.
+    ,-[src/pages/Dashboard/Checklist.jsx:19:9]
+ 18 |   const loggedMood = !!stats?.todayMood && stats.todayMood !== 'No mood yet';
+ 19 |   const drankWater = stats?.waterIntake >= 2000;
+    :         ^^^^^|^^^^
+    :              `-- 'drankWater' is declared here
+ 20 |   
+    `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Identifier 'BookOpen' is imported but never used.
+   ,-[src/pages/MeditationArticleView.jsx:6:28]
+ 5 | import api from '../services/api';
+ 6 | import { ArrowLeft, Clock, BookOpen, CheckCircle } from 'lucide-react';
+   :                            ^^^^|^^^
+   :                                `-- 'BookOpen' is imported here
+ 7 | import { motion } from 'framer-motion';
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-useless-escape): Unnecessary escape character '*'
+     ,-[src/pages/MeditationArticleView.jsx:214:48]
+ 213 |     if (trimmed.startsWith('•') || trimmed.startsWith('-') || /^\d+\./.test(trimmed)) {
+ 214 |       const cleaned = trimmed.replace(/^([•\-\*]|\d+\.)\s+/, '');
+     :                                              ^^
+ 215 |       return (
+     `----
+  help: Replace `\*` with `*`.
+
+  ! react(only-export-components): Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components.
+     ,-[src/context/AuthContext.jsx:300:14]
+ 299 | 
+ 300 | export const useAuth = () => {
+     :              ^^^^^^^
+ 301 |   const context = useContext(AuthContext);
+     `----
+
+  ! eslint(no-unused-vars): Identifier 'getComprehensiveAnalytics' is imported but never used.
+    ,-[server/controllers/dashboardController.js:16:10]
+ 15 | import { clearAICache, generateWellnessAnalysis, getRecommendedSleepRange } from '../services/aiService.js';
+ 16 | import { getComprehensiveAnalytics, calculateStreaks } from '../services/analyticsService.js';
+    :          ^^^^^^^^^^^^|^^^^^^^^^^^^
+    :                      `-- 'getComprehensiveAnalytics' is imported here
+ 17 | import { generateDashboardInsights } from '../services/grokService.js';
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'generateDashboardInsights' is imported but never used.
+    ,-[server/controllers/dashboardController.js:17:10]
+ 16 | import { getComprehensiveAnalytics, calculateStreaks } from '../services/analyticsService.js';
+ 17 | import { generateDashboardInsights } from '../services/grokService.js';
+    :          ^^^^^^^^^^^^|^^^^^^^^^^^^
+    :                      `-- 'generateDashboardInsights' is imported here
+ 18 | 
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Variable 'activities' is declared but never used. Unused variables should start with a '_'.
+     ,-[server/controllers/dashboardController.js:645:17]
+ 644 |   const userId = req.user._id;
+ 645 |   const { mood, activities } = req.body;
+     :                 ^^^^^|^^^^
+     :                      `-- 'activities' is declared here
+ 646 |   const entryDate = getFormattedLocalDate();
+     `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Catch parameter 'profErr' is caught but never used.
+      ,-[server/controllers/dashboardController.js:1101:14]
+ 1100 |       }
+ 1101 |     } catch (profErr) {
+      :              ^^^|^^^
+      :                 `-- 'profErr' is declared here
+ 1102 |       // Degrade gracefully
+      `----
+  help: Consider handling this error.
+
+  ! eslint(no-unused-vars): Variable 'getFormattedLocalDate' is declared but never used. Unused variables should start with a '_'.
+    ,-[server/controllers/journalController.js:9:7]
+  8 | // ── Helper ────────────────────────────────────────────────────────
+  9 | const getFormattedLocalDate = (d = new Date()) => {
+    :       ^^^^^^^^^^|^^^^^^^^^^
+    :                 `-- 'getFormattedLocalDate' is declared here
+ 10 |   const date = new Date(d);
+    `----
+  help: Consider removing this declaration.
+
+  ! react(only-export-components): Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components.
+   ,-[src/context/WaterContext.jsx:6:14]
+ 5 | 
+ 6 | export const useWater = () => {
+   :              ^^^^^^^^
+ 7 |   const context = useContext(WaterContext);
+   `----
+
+  ! eslint(no-unused-vars): Identifier 'Users' is imported but never used.
+   ,-[src/components/dashboard/Sidebar.jsx:4:18]
+ 3 |   Brain, LayoutDashboard, Calendar, BookOpen, BarChart3, Settings, 
+ 4 |   LogOut, Heart, Users, Crown, LifeBuoy, Flower2, PhoneCall, Droplet
+   :                  ^^|^^
+   :                    `-- 'Users' is imported here
+ 5 | } from 'lucide-react';
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'LifeBuoy' is imported but never used.
+   ,-[src/components/dashboard/Sidebar.jsx:4:32]
+ 3 |   Brain, LayoutDashboard, Calendar, BookOpen, BarChart3, Settings, 
+ 4 |   LogOut, Heart, Users, Crown, LifeBuoy, Flower2, PhoneCall, Droplet
+   :                                ^^^^|^^^
+   :                                    `-- 'LifeBuoy' is imported here
+ 5 | } from 'lucide-react';
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'PhoneCall' is imported but never used.
+   ,-[src/components/dashboard/Sidebar.jsx:4:51]
+ 3 |   Brain, LayoutDashboard, Calendar, BookOpen, BarChart3, Settings, 
+ 4 |   LogOut, Heart, Users, Crown, LifeBuoy, Flower2, PhoneCall, Droplet
+   :                                                   ^^^^|^^^^
+   :                                                       `-- 'PhoneCall' is imported here
+ 5 | } from 'lucide-react';
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Parameter 'setIsOpen' is declared but never used. Unused parameters should start with a '_'.
+    ,-[src/components/dashboard/Sidebar.jsx:10:43]
+  9 | 
+ 10 | export default function Sidebar({ isOpen, setIsOpen }) {
+    :                                           ^^^^|^^^^
+    :                                               `-- 'setIsOpen' is declared here
+ 11 |   const { logout, user } = useAuth();
+    `----
+  help: Consider removing this parameter.
+
+  ! eslint(no-unused-vars): Variable 'navigate' is declared but never used. Unused variables should start with a '_'.
+    ,-[src/components/dashboard/Sidebar.jsx:13:9]
+ 12 |   const location = useLocation();
+ 13 |   const navigate = useNavigate();
+    :         ^^^^|^^^
+    :             `-- 'navigate' is declared here
+ 14 | 
+    `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Identifier 'Link' is imported but never used.
+   ,-[src/pages/MeditationMindfulness.jsx:7:34]
+ 6 | import { motion, AnimatePresence } from 'framer-motion';
+ 7 | import { useNavigate, useParams, Link } from 'react-router-dom';
+   :                                  ^^|^
+   :                                    `-- 'Link' is imported here
+ 8 | import {
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'X' is imported but never used.
+    ,-[src/pages/MeditationMindfulness.jsx:9:42]
+  8 | import {
+  9 |   Play, Clock, Award, Compass, Sparkles, X, Heart, Smile, Moon, Target, Sun, ArrowLeft, RefreshCw, Flame, BookOpen, Eye
+    :                                          |
+    :                                          `-- 'X' is imported here
+ 10 | } from 'lucide-react';
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'BookOpen' is imported but never used.
+    ,-[src/pages/MeditationMindfulness.jsx:9:107]
+  8 | import {
+  9 |   Play, Clock, Award, Compass, Sparkles, X, Heart, Smile, Moon, Target, Sun, ArrowLeft, RefreshCw, Flame, BookOpen, Eye
+    :                                                                                                           ^^^^|^^^
+    :                                                                                                               `-- 'BookOpen' is imported here
+ 10 | } from 'lucide-react';
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Variable 'user' is declared but never used. Unused variables should start with a '_'.
+    ,-[src/pages/MeditationMindfulness.jsx:48:11]
+ 47 | export default function MeditationMindfulness() {
+ 48 |   const { user } = useAuth();
+    :           ^^|^
+    :             `-- 'user' is declared here
+ 49 |   const navigate = useNavigate();
+    `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Variable 'loading' is declared but never used. Unused variables should start with a '_'.
+    ,-[src/pages/MeditationMindfulness.jsx:57:10]
+ 56 |   const [quoteIdx, setQuoteIdx] = useState(0);
+ 57 |   const [loading, setLoading] = useState(true);
+    :          ^^^|^^^
+    :             `-- 'loading' is declared here
+ 58 | 
+    `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Identifier 'Activity' is imported but never used.
+   ,-[src/pages/Dashboard/AIInsight.jsx:2:20]
+ 1 | import React, { useState, useEffect } from 'react';
+ 2 | import { Sparkles, Activity, TrendingUp, AlertTriangle, Compass, Moon, Heart, Droplet, PenTool, Dumbbell, Calendar, Target, Info, RefreshCw, Brain } from 'lucide-react';
+   :                    ^^^^|^^^
+   :                        `-- 'Activity' is imported here
+ 3 | import { useNavigate } from 'react-router-dom';
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'Target' is imported but never used.
+   ,-[src/pages/Dashboard/AIInsight.jsx:2:117]
+ 1 | import React, { useState, useEffect } from 'react';
+ 2 | import { Sparkles, Activity, TrendingUp, AlertTriangle, Compass, Moon, Heart, Droplet, PenTool, Dumbbell, Calendar, Target, Info, RefreshCw, Brain } from 'lucide-react';
+   :                                                                                                                     ^^^|^^
+   :                                                                                                                        `-- 'Target' is imported here
+ 3 | import { useNavigate } from 'react-router-dom';
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Variable 'totalStreaks' is declared but never used. Unused variables should start with a '_'.
+     ,-[src/pages/Dashboard/AIInsight.jsx:269:9]
+ 268 |   const totalExercises = data.length;
+ 269 |   const totalStreaks = data.reduce((sum, h) => sum + (h.streak || 0), 0);
+     :         ^^^^^^|^^^^^
+     :               `-- 'totalStreaks' is declared here
+ 270 |   const totalCompletions = data.reduce((sum, h) => sum + (h.completedDates?.length || 0), 0);
+     `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Variable 'recommendations' is declared but never used. Unused variables should start with a '_'.
+     ,-[src/pages/Dashboard/AIInsight.jsx:526:9]
+ 525 | 
+ 526 |   const recommendations = Array.isArray(aiWellness.personalizedRecommendations)
+     :         ^^^^^^^|^^^^^^^
+     :                `-- 'recommendations' is declared here
+ 527 |     ? aiWellness.personalizedRecommendations
+     `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-useless-escape): Unnecessary escape character '*'
+     ,-[src/pages/Dashboard/AIInsight.jsx:577:74]
+ 576 |             // Try splitting by newline first
+ 577 |             let lines = summary.split('\n').map(l => l.replace(/^[\s•\-\*]+/, '').trim()).filter(Boolean);
+     :                                                                        ^^
+ 578 |             
+     `----
+  help: Replace `\*` with `*`.
+
+  ! eslint(no-unused-vars): Identifier 'WellnessProfile' is imported but never used.
+   ,-[server/controllers/badgeController.js:5:8]
+ 4 | import UserMeditation from '../models/UserMeditation.js';
+ 5 | import WellnessProfile from '../models/WellnessProfile.js';
+   :        ^^^^^^^|^^^^^^^
+   :               `-- 'WellnessProfile' is imported here
+ 6 | import { getOrCreateProfile } from '../services/gamificationService.js';
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'bcrypt' is imported but never used.
+   ,-[server/controllers/authController.js:4:8]
+ 3 | import crypto from 'crypto';
+ 4 | import bcrypt from 'bcryptjs';
+   :        ^^^|^^
+   :           `-- 'bcrypt' is imported here
+ 5 | import { sendEmail } from '../utils/email.js';
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Variable 'generateNumericOTP' is declared but never used. Unused variables should start with a '_'.
+    ,-[server/controllers/authController.js:15:7]
+ 14 | // Generate a random 6-digit numeric OTP
+ 15 | const generateNumericOTP = () => {
+    :       ^^^^^^^^^|^^^^^^^^
+    :                `-- 'generateNumericOTP' is declared here
+ 16 |   return Math.floor(100000 + Math.random() * 900000).toString();
+    `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Variable 'profilePic' is declared but never used. Unused variables should start with a '_'.
+     ,-[server/controllers/authController.js:233:33]
+ 232 | export const googleLogin = async (req, res) => {
+ 233 |   const { tokenId, name, email, profilePic } = req.body;
+     :                                 ^^^^^|^^^^
+     :                                      `-- 'profilePic' is declared here
+ 234 | 
+     `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Identifier 'TrendingUp' is imported but never used.
+    ,-[src/pages/Wellness.jsx:10:55]
+  9 |   Heart, Plus, Trash2, Award, Flame, Sparkles, Check,
+ 10 |   BookOpen, Activity, Moon, Target, Compass, Droplet, TrendingUp, MoreHorizontal, Sun,
+    :                                                       ^^^^^|^^^^
+    :                                                            `-- 'TrendingUp' is imported here
+ 11 |   Calendar, Smile, Trophy, X
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'Sun' is imported but never used.
+    ,-[src/pages/Wellness.jsx:10:83]
+  9 |   Heart, Plus, Trash2, Award, Flame, Sparkles, Check,
+ 10 |   BookOpen, Activity, Moon, Target, Compass, Droplet, TrendingUp, MoreHorizontal, Sun,
+    :                                                                                   ^|^
+    :                                                                                    `-- 'Sun' is imported here
+ 11 |   Calendar, Smile, Trophy, X
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'Calendar' is imported but never used.
+    ,-[src/pages/Wellness.jsx:11:3]
+ 10 |   BookOpen, Activity, Moon, Target, Compass, Droplet, TrendingUp, MoreHorizontal, Sun,
+ 11 |   Calendar, Smile, Trophy, X
+    :   ^^^^|^^^
+    :       `-- 'Calendar' is imported here
+ 12 | } from 'lucide-react';
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'Smile' is imported but never used.
+    ,-[src/pages/Wellness.jsx:11:13]
+ 10 |   BookOpen, Activity, Moon, Target, Compass, Droplet, TrendingUp, MoreHorizontal, Sun,
+ 11 |   Calendar, Smile, Trophy, X
+    :             ^^|^^
+    :               `-- 'Smile' is imported here
+ 12 | } from 'lucide-react';
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'X' is imported but never used.
+    ,-[src/pages/Wellness.jsx:11:28]
+ 10 |   BookOpen, Activity, Moon, Target, Compass, Droplet, TrendingUp, MoreHorizontal, Sun,
+ 11 |   Calendar, Smile, Trophy, X
+    :                            |
+    :                            `-- 'X' is imported here
+ 12 | } from 'lucide-react';
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Variable 'isLightMode' is declared but never used. Unused variables should start with a '_'.
+    ,-[src/pages/Wellness.jsx:42:11]
+ 41 |   const [sidebarOpen, setSidebarOpen] = useState(true);
+ 42 |   const { isLightMode } = useTheme();
+    :           ^^^^^|^^^^^
+    :                `-- 'isLightMode' is declared here
+ 43 | 
+    `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Variable 'hoveredBadge' is declared but never used. Unused variables should start with a '_'.
+    ,-[src/pages/Wellness.jsx:79:10]
+ 78 |   const [activeHabitMenuId, setActiveHabitMenuId] = useState(null);
+ 79 |   const [hoveredBadge, setHoveredBadge] = useState(null);
+    :          ^^^^^^|^^^^^
+    :                `-- 'hoveredBadge' is declared here
+ 80 |   const [selectedBadge, setSelectedBadge] = useState(null);
+    `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Variable 'setHoveredBadge' is declared but never used. Unused variables should start with a '_'.
+    ,-[src/pages/Wellness.jsx:79:24]
+ 78 |   const [activeHabitMenuId, setActiveHabitMenuId] = useState(null);
+ 79 |   const [hoveredBadge, setHoveredBadge] = useState(null);
+    :                        ^^^^^^^|^^^^^^^
+    :                               `-- 'setHoveredBadge' is declared here
+ 80 |   const [selectedBadge, setSelectedBadge] = useState(null);
+    `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Variable 'pathD' is assigned a value but never used. Unused variables should start with a '_'.
+     ,-[src/pages/Wellness.jsx:242:7]
+ 241 |   
+ 242 |   let pathD = '';
+     :       ^^|^^
+     :         `-- 'pathD' is declared here
+ 243 |   if (hasActivityData) {
+ 244 |     const maxCount = Math.max(1, ...activity.map(d => d.count));
+ 245 |     const points = activity.map((d, index) => {
+ 246 |       const x = 10 + (index * 13.3);
+ 247 |       const y = 30 - ((d.count / maxCount) * 22);
+ 248 |       return `${x},${y}`;
+ 249 |     });
+ 250 |     pathD = `M ${points.join(' L ')}`;
+     :     ^^|^^
+     :       `-- it was last assigned here
+ 251 |   }
+     `----
+  help: Did you mean to use this variable?
+
+  ! eslint(no-unused-vars): Variable 'highlightText' is declared but never used. Unused variables should start with a '_'.
+     ,-[src/pages/Wellness.jsx:253:9]
+ 252 | 
+ 253 |   const highlightText = (text, highlight) => {
+     :         ^^^^^^|^^^^^^
+     :               `-- 'highlightText' is declared here
+ 254 |     if (!highlight) return text;
+     `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Identifier 'useState' is imported but never used.
+   ,-[src/context/ThemeContext.jsx:1:44]
+ 1 | import React, { createContext, useContext, useState, useEffect } from 'react';
+   :                                            ^^^^|^^^
+   :                                                `-- 'useState' is imported here
+ 2 | 
+   `----
+  help: Consider removing this import.
+
+  ! react(only-export-components): Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components.
+    ,-[src/context/ThemeContext.jsx:26:14]
+ 25 | 
+ 26 | export const useTheme = () => {
+    :              ^^^^^^^^
+ 27 |   const context = useContext(ThemeContext);
+    `----
+
+  ! eslint(no-unused-vars): Identifier 'Send' is imported but never used.
+   ,-[src/pages/Community.jsx:4:50]
+ 3 | import {
+ 4 |   Users, MessageSquare, Heart, Bookmark, Share2, Send, AlertTriangle, Phone,
+   :                                                  ^^|^
+   :                                                    `-- 'Send' is imported here
+ 5 |   BookOpen, ShieldAlert, Sparkles, Plus, Trash2, Check, X,
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'Phone' is imported but never used.
+   ,-[src/pages/Community.jsx:4:71]
+ 3 | import {
+ 4 |   Users, MessageSquare, Heart, Bookmark, Share2, Send, AlertTriangle, Phone,
+   :                                                                       ^^|^^
+   :                                                                         `-- 'Phone' is imported here
+ 5 |   BookOpen, ShieldAlert, Sparkles, Plus, Trash2, Check, X,
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'BookOpen' is imported but never used.
+   ,-[src/pages/Community.jsx:5:3]
+ 4 |   Users, MessageSquare, Heart, Bookmark, Share2, Send, AlertTriangle, Phone,
+ 5 |   BookOpen, ShieldAlert, Sparkles, Plus, Trash2, Check, X,
+   :   ^^^^|^^^
+   :       `-- 'BookOpen' is imported here
+ 6 |   ShieldCheck, AlertCircle, PhoneCall
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'Sparkles' is imported but never used.
+   ,-[src/pages/Community.jsx:5:26]
+ 4 |   Users, MessageSquare, Heart, Bookmark, Share2, Send, AlertTriangle, Phone,
+ 5 |   BookOpen, ShieldAlert, Sparkles, Plus, Trash2, Check, X,
+   :                          ^^^^|^^^
+   :                              `-- 'Sparkles' is imported here
+ 6 |   ShieldCheck, AlertCircle, PhoneCall
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'Plus' is imported but never used.
+   ,-[src/pages/Community.jsx:5:36]
+ 4 |   Users, MessageSquare, Heart, Bookmark, Share2, Send, AlertTriangle, Phone,
+ 5 |   BookOpen, ShieldAlert, Sparkles, Plus, Trash2, Check, X,
+   :                                    ^^|^
+   :                                      `-- 'Plus' is imported here
+ 6 |   ShieldCheck, AlertCircle, PhoneCall
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'Check' is imported but never used.
+   ,-[src/pages/Community.jsx:5:50]
+ 4 |   Users, MessageSquare, Heart, Bookmark, Share2, Send, AlertTriangle, Phone,
+ 5 |   BookOpen, ShieldAlert, Sparkles, Plus, Trash2, Check, X,
+   :                                                  ^^|^^
+   :                                                    `-- 'Check' is imported here
+ 6 |   ShieldCheck, AlertCircle, PhoneCall
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'ShieldCheck' is imported but never used.
+   ,-[src/pages/Community.jsx:6:3]
+ 5 |   BookOpen, ShieldAlert, Sparkles, Plus, Trash2, Check, X,
+ 6 |   ShieldCheck, AlertCircle, PhoneCall
+   :   ^^^^^|^^^^^
+   :        `-- 'ShieldCheck' is imported here
+ 7 | } from 'lucide-react';
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'AlertCircle' is imported but never used.
+   ,-[src/pages/Community.jsx:6:16]
+ 5 |   BookOpen, ShieldAlert, Sparkles, Plus, Trash2, Check, X,
+ 6 |   ShieldCheck, AlertCircle, PhoneCall
+   :                ^^^^^|^^^^^
+   :                     `-- 'AlertCircle' is imported here
+ 7 | } from 'lucide-react';
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'PhoneCall' is imported but never used.
+   ,-[src/pages/Community.jsx:6:29]
+ 5 |   BookOpen, ShieldAlert, Sparkles, Plus, Trash2, Check, X,
+ 6 |   ShieldCheck, AlertCircle, PhoneCall
+   :                             ^^^^|^^^^
+   :                                 `-- 'PhoneCall' is imported here
+ 7 | } from 'lucide-react';
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'Skeleton' is imported but never used.
+    ,-[src/pages/Community.jsx:13:10]
+ 12 | import { useTheme } from '../context/ThemeContext';
+ 13 | import { Skeleton } from '../components/ui/Skeleton';
+    :          ^^^^|^^^
+    :              `-- 'Skeleton' is imported here
+ 14 | 
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Variable 'isLightMode' is declared but never used. Unused variables should start with a '_'.
+    ,-[src/pages/Community.jsx:18:11]
+ 17 |   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+ 18 |   const { isLightMode } = useTheme();
+    :           ^^^^^|^^^^^
+    :                `-- 'isLightMode' is declared here
+ 19 |   const [loading, setLoading] = useState(false);
+    `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Variable 'error' is declared but never used. Unused variables should start with a '_'.
+    ,-[src/pages/Community.jsx:20:10]
+ 19 |   const [loading, setLoading] = useState(false);
+ 20 |   const [error, setError] = useState(null);
+    :          ^^|^^
+    :            `-- 'error' is declared here
+ 21 | 
+    `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Variable 'handleToggleLike' is declared but never used. Unused variables should start with a '_'.
+    ,-[src/pages/Community.jsx:96:9]
+ 95 | 
+ 96 |   const handleToggleLike = async (postId) => {
+    :         ^^^^^^^^|^^^^^^^
+    :                 `-- 'handleToggleLike' is declared here
+ 97 |     try {
+    `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Variable 'handleToggleBookmark' is declared but never used. Unused variables should start with a '_'.
+     ,-[src/pages/Community.jsx:114:9]
+ 113 | 
+ 114 |   const handleToggleBookmark = async (postId) => {
+     :         ^^^^^^^^^^|^^^^^^^^^
+     :                   `-- 'handleToggleBookmark' is declared here
+ 115 |     try {
+     `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Variable 'handleOpenPostDetails' is declared but never used. Unused variables should start with a '_'.
+     ,-[src/pages/Community.jsx:128:9]
+ 127 | 
+ 128 |   const handleOpenPostDetails = async (post) => {
+     :         ^^^^^^^^^^|^^^^^^^^^^
+     :                   `-- 'handleOpenPostDetails' is declared here
+ 129 |     setSelectedPost(post);
+     `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Parameter 'postId' is declared but never used. Unused parameters should start with a '_'.
+     ,-[src/pages/Community.jsx:173:29]
+ 172 | 
+ 173 |   const handleReportPost = (postId) => {
+     :                             ^^^|^^
+     :                                `-- 'postId' is declared here
+ 174 |     alert('🚩 Post reported. Our moderation team will review this entry within 2 hours. Thank you for keeping our community safe.');
+     `----
+  help: Consider removing this parameter.
+
+  ! react-hooks(exhaustive-deps): React Hook useEffect has a missing dependency: 'fetchPosts'
+    ,-[src/pages/Community.jsx:69:6]
+ 67 |   useEffect(() => {
+ 68 |     fetchPosts();
+    :     ^^^^^|^^^^
+    :          `-- useEffect uses `fetchPosts` here
+ 69 |   }, [feedFilter, selectedCategory]);
+    :      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ 70 | 
+    `----
+  help: Either include it or remove the dependency array.
+
+  ! eslint(no-unused-vars): Identifier 'Filter' is imported but never used.
+    ,-[src/pages/AdminDashboard.jsx:11:11]
+ 10 |   Users, Crown, Activity, UserPlus, FileText, BarChart3,
+ 11 |   Search, Filter, Download, Eye, Trash2, ChevronsLeft, 
+    :           ^^^|^^
+    :              `-- 'Filter' is imported here
+ 12 |   ChevronLeft, ChevronRight, ChevronsRight, ChevronDown, Bell, 
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'Shield' is imported but never used.
+    ,-[src/pages/AdminDashboard.jsx:13:39]
+ 12 |   ChevronLeft, ChevronRight, ChevronsRight, ChevronDown, Bell, 
+ 13 |   X, Check, AlertCircle, ShieldAlert, Shield, ShieldX, UserCheck
+    :                                       ^^^|^^
+    :                                          `-- 'Shield' is imported here
+ 14 | } from 'lucide-react';
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'ShieldX' is imported but never used.
+    ,-[src/pages/AdminDashboard.jsx:13:47]
+ 12 |   ChevronLeft, ChevronRight, ChevronsRight, ChevronDown, Bell, 
+ 13 |   X, Check, AlertCircle, ShieldAlert, Shield, ShieldX, UserCheck
+    :                                               ^^^|^^^
+    :                                                  `-- 'ShieldX' is imported here
+ 14 | } from 'lucide-react';
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Variable 'setSortBy' is declared but never used. Unused variables should start with a '_'.
+    ,-[src/pages/AdminDashboard.jsx:24:18]
+ 23 |   const [filterType, setFilterType] = useState('all'); // 'all', 'user', 'admin', 'active', 'inactive', 'blocked'
+ 24 |   const [sortBy, setSortBy] = useState('newest');
+    :                  ^^^^|^^^^
+    :                      `-- 'setSortBy' is declared here
+ 25 |   const [page, setPage] = useState(1);
+    `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Variable 'isPlaceholderData' is declared but never used. Unused variables should start with a '_'.
+    ,-[src/pages/AdminDashboard.jsx:65:5]
+ 64 |     isLoading: usersLoading,
+ 65 |     isPlaceholderData
+    :     ^^^^^^^^|^^^^^^^^
+    :             `-- 'isPlaceholderData' is declared here
+ 66 |   } = useQuery({
+    `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Catch parameter 'err' is caught but never used.
+     ,-[src/pages/AdminDashboard.jsx:146:14]
+ 145 |       showToast('success', 'Filtered users list successfully exported as CSV.');
+ 146 |     } catch (err) {
+     :              ^|^
+     :               `-- 'err' is declared here
+ 147 |       showToast('error', 'Failed to generate outbound CSV download.');
+     `----
+  help: Consider handling this error.
+
+  ! eslint(no-unused-vars): Variable 'initial' is declared but never used. Unused variables should start with a '_'.
+     ,-[src/pages/AdminDashboard.jsx:467:29]
+ 466 |                     {usersList.map((targetUser) => {
+ 467 |                       const initial = targetUser.name ? targetUser.name.charAt(0).toUpperCase() : 'U';
+     :                             ^^^|^^^
+     :                                `-- 'initial' is declared here
+ 468 |                       const isSelf = currentAdmin && (currentAdmin.id === targetUser._id || currentAdmin._id === targetUser._id);
+     `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Catch parameter 'err' is caught but never used.
+     ,-[src/pages/AdminDashboard.jsx:949:14]
+ 948 |       }
+ 949 |     } catch (err) {
+     :              ^|^
+     :               `-- 'err' is declared here
+ 950 |       showToast('error', 'Failed to retrieve detailed diagnostic logs.');
+     `----
+  help: Consider handling this error.
+
+  ! eslint(no-unused-vars): Identifier 'useRef' is imported but never used.
+   ,-[src/pages/MeditationVideoView.jsx:1:38]
+ 1 | import React, { useState, useEffect, useRef } from 'react';
+   :                                      ^^^|^^
+   :                                         `-- 'useRef' is imported here
+ 2 | import { useParams, useNavigate } from 'react-router-dom';
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'Play' is imported but never used.
+   ,-[src/pages/MeditationVideoView.jsx:6:21]
+ 5 | import api from '../services/api';
+ 6 | import { ArrowLeft, Play, Eye, Clock, Sparkles } from 'lucide-react';
+   :                     ^^|^
+   :                       `-- 'Play' is imported here
+ 7 | import { motion } from 'framer-motion';
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-useless-escape): Unnecessary escape character '&'
+    ,-[src/pages/MeditationVideoView.jsx:59:66]
+ 58 |     let videoId = '';
+ 59 |     const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    :                                                                  ^^
+ 60 |     const match = url.match(regExp);
+    `----
+  help: Replace `\&` with `&`.
+
+  ! eslint(no-useless-escape): Unnecessary escape character '&'
+    ,-[src/pages/MeditationVideoView.jsx:59:75]
+ 58 |     let videoId = '';
+ 59 |     const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    :                                                                           ^^
+ 60 |     const match = url.match(regExp);
+    `----
+  help: Replace `\&` with `&`.
+
+  ! eslint(no-useless-escape): Unnecessary escape character '?'
+    ,-[src/pages/MeditationVideoView.jsx:59:77]
+ 58 |     let videoId = '';
+ 59 |     const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    :                                                                             ^^
+ 60 |     const match = url.match(regExp);
+    `----
+  help: Replace `\?` with `?`.
+
+  ! eslint(no-unused-vars): Identifier 'BarChart' is imported but never used.
+    ,-[src/pages/Analytics.jsx:10:3]
+  9 |   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
+ 10 |   BarChart, Bar, PieChart, Pie, Cell, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar,
+    :   ^^^^|^^^
+    :       `-- 'BarChart' is imported here
+ 11 |   AreaChart, Area
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'Bar' is imported but never used.
+    ,-[src/pages/Analytics.jsx:10:13]
+  9 |   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
+ 10 |   BarChart, Bar, PieChart, Pie, Cell, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar,
+    :             ^|^
+    :              `-- 'Bar' is imported here
+ 11 |   AreaChart, Area
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'Smile' is imported but never used.
+    ,-[src/pages/Analytics.jsx:13:17]
+ 12 | } from 'recharts';
+ 13 | import { Heart, Smile, BookOpen, Flame, Award, FileText, RefreshCw, Sparkles, Check, ChevronRight, BarChart3, Activity, Brain, ClipboardList } from 'lucide-react';
+    :                 ^^|^^
+    :                   `-- 'Smile' is imported here
+ 14 | 
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'BookOpen' is imported but never used.
+    ,-[src/pages/Analytics.jsx:13:24]
+ 12 | } from 'recharts';
+ 13 | import { Heart, Smile, BookOpen, Flame, Award, FileText, RefreshCw, Sparkles, Check, ChevronRight, BarChart3, Activity, Brain, ClipboardList } from 'lucide-react';
+    :                        ^^^^|^^^
+    :                            `-- 'BookOpen' is imported here
+ 14 | 
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'Award' is imported but never used.
+    ,-[src/pages/Analytics.jsx:13:41]
+ 12 | } from 'recharts';
+ 13 | import { Heart, Smile, BookOpen, Flame, Award, FileText, RefreshCw, Sparkles, Check, ChevronRight, BarChart3, Activity, Brain, ClipboardList } from 'lucide-react';
+    :                                         ^^|^^
+    :                                           `-- 'Award' is imported here
+ 14 | 
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'Check' is imported but never used.
+    ,-[src/pages/Analytics.jsx:13:79]
+ 12 | } from 'recharts';
+ 13 | import { Heart, Smile, BookOpen, Flame, Award, FileText, RefreshCw, Sparkles, Check, ChevronRight, BarChart3, Activity, Brain, ClipboardList } from 'lucide-react';
+    :                                                                               ^^|^^
+    :                                                                                 `-- 'Check' is imported here
+ 14 | 
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'ChevronRight' is imported but never used.
+    ,-[src/pages/Analytics.jsx:13:86]
+ 12 | } from 'recharts';
+ 13 | import { Heart, Smile, BookOpen, Flame, Award, FileText, RefreshCw, Sparkles, Check, ChevronRight, BarChart3, Activity, Brain, ClipboardList } from 'lucide-react';
+    :                                                                                      ^^^^^^|^^^^^
+    :                                                                                            `-- 'ChevronRight' is imported here
+ 14 | 
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Variable 'isLightMode' is declared but never used. Unused variables should start with a '_'.
+    ,-[src/pages/Analytics.jsx:76:11]
+ 75 |   const [sidebarOpen, setSidebarOpen] = useState(true);
+ 76 |   const { isLightMode } = useTheme();
+    :           ^^^^^|^^^^^
+    :                `-- 'isLightMode' is declared here
+ 77 |   const [timeRange, setTimeRange] = useState('weekly'); // daily, weekly, monthly
+    `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Variable 'streaks' is declared but never used. Unused variables should start with a '_'.
+    ,-[src/pages/Analytics.jsx:82:10]
+ 81 |   const [error, setError] = useState(null);
+ 82 |   const [streaks, setStreaks] = useState({ currentStreak: 0, longestStreak: 0 });
+    :          ^^^|^^^
+    :             `-- 'streaks' is declared here
+ 83 |   const [moodData, setMoodData] = useState(null);
+    `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Variable 'journalData' is declared but never used. Unused variables should start with a '_'.
+    ,-[src/pages/Analytics.jsx:84:10]
+ 83 |   const [moodData, setMoodData] = useState(null);
+ 84 |   const [journalData, setJournalData] = useState(null);
+    :          ^^^^^|^^^^^
+    :               `-- 'journalData' is declared here
+ 85 |   const [wellnessData, setWellnessData] = useState(null);
+    `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Identifier 'Smile' is imported but never used.
+   ,-[src/components/dashboard/DashboardModals.jsx:3:13]
+ 2 | import { motion, AnimatePresence } from 'framer-motion';
+ 3 | import { X, Smile, Star, BookOpen, Activity, Heart, ShieldCheck, Sparkles } from 'lucide-react';
+   :             ^^|^^
+   :               `-- 'Smile' is imported here
+ 4 | import { Button } from '../ui/Button';
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'Heart' is imported but never used.
+   ,-[src/components/dashboard/DashboardModals.jsx:3:46]
+ 2 | import { motion, AnimatePresence } from 'framer-motion';
+ 3 | import { X, Smile, Star, BookOpen, Activity, Heart, ShieldCheck, Sparkles } from 'lucide-react';
+   :                                              ^^|^^
+   :                                                `-- 'Heart' is imported here
+ 4 | import { Button } from '../ui/Button';
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'ShieldCheck' is imported but never used.
+   ,-[src/components/dashboard/DashboardModals.jsx:3:53]
+ 2 | import { motion, AnimatePresence } from 'framer-motion';
+ 3 | import { X, Smile, Star, BookOpen, Activity, Heart, ShieldCheck, Sparkles } from 'lucide-react';
+   :                                                     ^^^^^|^^^^^
+   :                                                          `-- 'ShieldCheck' is imported here
+ 4 | import { Button } from '../ui/Button';
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'AnimatePresence' is imported but never used.
+    ,-[src/pages/AIAssistant.jsx:10:18]
+  9 | import UserAvatar from '../components/ui/UserAvatar';
+ 10 | import { motion, AnimatePresence } from 'framer-motion';
+    :                  ^^^^^^^|^^^^^^^
+    :                         `-- 'AnimatePresence' is imported here
+ 11 | import {
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Variable 'isLightMode' is declared but never used. Unused variables should start with a '_'.
+    ,-[src/pages/AIAssistant.jsx:62:11]
+ 61 |   const [sidebarOpen, setSidebarOpen] = useState(true);
+ 62 |   const { isLightMode } = useTheme();
+    :           ^^^^^|^^^^^
+    :                `-- 'isLightMode' is declared here
+ 63 | 
+    `----
+  help: Consider removing this declaration.
+
+  ! react-hooks(exhaustive-deps): React Hook useEffect has a missing dependency: 'fetchMessages'
+     ,-[src/pages/AIAssistant.jsx:125:6]
+ 118 |     if (initialConvId) {
+ 119 |       fetchMessages(initialConvId);
+     :       ^^^^^^|^^^^^^
+     :             `-- useEffect uses `fetchMessages` here
+ 120 |     } else {
+ 121 |       setMessages([]);
+ 122 |       setTitle('New Chat');
+ 123 |       setActiveConversationId(null);
+ 124 |     }
+ 125 |   }, [initialConvId]);
+     :      ^^^^^^^^^^^^^^^
+ 126 | 
+     `----
+  help: Either include it or remove the dependency array.
+
+  ! react-hooks(exhaustive-deps): React Hook useEffect has a missing dependency: 'isScrolledUp'
+     ,-[src/pages/AIAssistant.jsx:136:6]
+ 132 |   useEffect(() => {
+ 133 |     if (!isScrolledUp) {
+     :          ^^^^^^|^^^^^
+     :                `-- useEffect uses `isScrolledUp` here
+ 134 |       scrollToBottom();
+ 135 |     }
+ 136 |   }, [messages, loadingChat]);
+     :      ^^^^^^^^^^^^^^^^^^^^^^^
+ 137 | 
+     `----
+  help: Either include it or remove the dependency array.
+
+Found 184 warnings and 0 errors.
+Finished in 47ms on 156 files with 91 rules using 16 threads.

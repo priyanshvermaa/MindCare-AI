@@ -73,7 +73,7 @@ requiredEnvVars.forEach((envVar) => {
 
 // Connect to Database
 connectDB().then(() => {
-  seedInitialData();
+  seedInitialData(false);
 });
 
 const app = express();
@@ -84,9 +84,14 @@ app.use(cors({
     if (!origin) return callback(null, true);
 
     const allowedOrigins = [
-  "http://localhost:5173",
-  "https://mind-care-ai-smoky.vercel.app",
-  "https://mind-care-ai-q97hetfyg-pv8111142-8272s-projects.vercel.app"];
+      "http://localhost:5173",
+      "https://mind-care-ai-smoky.vercel.app",
+      "https://mind-care-ai-q97hetfyg-pv8111142-8272s-projects.vercel.app"
+    ];
+
+    if (process.env.CLIENT_URL) {
+      allowedOrigins.push(process.env.CLIENT_URL);
+    }
 
     if (allowedOrigins.includes(origin)) {
       callback(null, true);

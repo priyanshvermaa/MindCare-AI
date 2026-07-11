@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const connectDB = async () => {
   try {
-    const connString = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/mindcare';
+    const connString = process.env.MONGO_URI || process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/mindcare';
 
     const conn = await mongoose.connect(connString, {
       serverSelectionTimeoutMS: 5000,

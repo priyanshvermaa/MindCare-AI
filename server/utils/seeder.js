@@ -12,12 +12,15 @@ import ReadingProgress from '../models/ReadingProgress.js';
 import { SEED_QUOTES } from '../controllers/quoteController.js';
 import mongoose from 'mongoose';
 
-export const seedInitialData = async () => {
+export const seedInitialData = async (forceReset = false) => {
   try {
-    // Clear user progress tracking collections to reset statistics to zero
-    await UserMeditationProgress.deleteMany({});
-    await WatchHistory.deleteMany({});
-    await ReadingProgress.deleteMany({});
+    if (forceReset) {
+      console.log('🧹 Force resetting user progress tracking collections...');
+      // Clear user progress tracking collections to reset statistics to zero
+      await UserMeditationProgress.deleteMany({});
+      await WatchHistory.deleteMany({});
+      await ReadingProgress.deleteMany({});
+    }
 
     // 1. Seed Support Groups
     const groupCount = await SupportGroup.countDocuments();
@@ -398,21 +401,26 @@ Be gentle with yourself. Healing from fatigue takes time, and your cognitive cap
     }
 
     // --- SEED MEDITATION CATEGORIES ---
-    console.log('🌱 Seeding Meditation Categories...');
-    await MeditationCategory.deleteMany({});
-    const categories = await MeditationCategory.create([
-      { name: 'Stress Relief', slug: 'stress-relief', description: 'Calm your nervous system and find emotional stability through guided breathing and deep mindfulness patterns.', icon: 'Smile', count: '12 Sessions' },
-      { name: 'Sleep', slug: 'sleep', description: 'Prepare your mind and body for deep, restorative sleep by letting go of daytime cognitive stress.', icon: 'Moon', count: '10 Sessions' },
-      { name: 'Anxiety', slug: 'anxiety', description: 'Ground yourself during acute moments of worry, panic, or overwhelming cognitive scatter.', icon: 'Heart', count: '8 Sessions' },
-      { name: 'Focus', slug: 'focus', description: 'Train your attention muscle to resist distractions and sustain cognitive concentration.', icon: 'Target', count: '9 Sessions' },
-      { name: 'Self Love', slug: 'self-love', description: 'Nurture self-compassion, silence self-criticism, and celebrate your personal resilience.', icon: 'Award', count: '7 Sessions' },
-      { name: 'Morning', slug: 'morning', description: 'Awaken your attention and set positive, focused intentions for your upcoming workday.', icon: 'Sun', count: '6 Sessions' }
-    ]);
-    console.log('✅ Meditation Categories seeded successfully!');
+    const categoryCount = await MeditationCategory.countDocuments();
+    if (categoryCount === 0 || forceReset) {
+      console.log('🌱 Seeding Meditation Categories...');
+      await MeditationCategory.deleteMany({});
+      const categories = await MeditationCategory.create([
+        { name: 'Stress Relief', slug: 'stress-relief', description: 'Calm your nervous system and find emotional stability through guided breathing and deep mindfulness patterns.', icon: 'Smile', count: '12 Sessions' },
+        { name: 'Sleep', slug: 'sleep', description: 'Prepare your mind and body for deep, restorative sleep by letting go of daytime cognitive stress.', icon: 'Moon', count: '10 Sessions' },
+        { name: 'Anxiety', slug: 'anxiety', description: 'Ground yourself during acute moments of worry, panic, or overwhelming cognitive scatter.', icon: 'Heart', count: '8 Sessions' },
+        { name: 'Focus', slug: 'focus', description: 'Train your attention muscle to resist distractions and sustain cognitive concentration.', icon: 'Target', count: '9 Sessions' },
+        { name: 'Self Love', slug: 'self-love', description: 'Nurture self-compassion, silence self-criticism, and celebrate your personal resilience.', icon: 'Award', count: '7 Sessions' },
+        { name: 'Morning', slug: 'morning', description: 'Awaken your attention and set positive, focused intentions for your upcoming workday.', icon: 'Sun', count: '6 Sessions' }
+      ]);
+      console.log('✅ Meditation Categories seeded successfully!');
+    }
 
     // --- SEED MEDITATION ARTICLES ---
-    console.log('🌱 Seeding Meditation Articles (30+)...');
-    await MeditationArticle.deleteMany({});
+    const articleCount = await MeditationArticle.countDocuments();
+    if (articleCount === 0 || forceReset) {
+      console.log('🌱 Seeding Meditation Articles (30+)...');
+      await MeditationArticle.deleteMany({});
 
     const expandArticleContent = (categorySlug, title, summary, shortContent) => {
       const formattedCategory = (categorySlug || 'wellness').replace('-', ' ').toUpperCase();
@@ -815,10 +823,13 @@ Explore the rest of the wellness tools and interactive dashboards in the ${forma
 
     await MeditationArticle.create(expandedArticles);
     console.log('✅ Meditation Articles seeded successfully!');
+    }
 
     // --- SEED MEDITATION VIDEOS ---
-    console.log('🌱 Seeding Meditation Videos (30+)...');
-    await MeditationVideo.deleteMany({});
+    const videoCount = await MeditationVideo.countDocuments();
+    if (videoCount === 0 || forceReset) {
+      console.log('🌱 Seeding Meditation Videos (30+)...');
+      await MeditationVideo.deleteMany({});
     await MeditationVideo.create([
       // Stress Relief
       {
@@ -1164,6 +1175,7 @@ Explore the rest of the wellness tools and interactive dashboards in the ${forma
       }
     ]);
     console.log('✅ Meditation Videos seeded successfully!');
+    }
   } catch (err) {
     console.error('❌ Seeding error:', err.message);
   }
